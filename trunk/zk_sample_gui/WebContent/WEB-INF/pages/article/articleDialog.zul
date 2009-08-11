@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+	<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+	<window id="window_ArticlesDialog"
+		title="${c:l('window_ArticlesDialog.title')}" border="none"
+		sizable="true"
+		use="de.forsthaus.zksample.webui.article.ArticleDialogCtrl"
+		closable="true" width="500px" height="320px">
+
+		<style>
+			body { padding: 0 0; /* 0 padding on top and bottom and 0
+			padding on right and left */ }
+		</style>
+
+		<borderlayout id="borderlayoutArticleDialog">
+			<north border="none" margins="0,0,0,0" size="90%">
+				<div id="divNorthArticleDialog">
+
+					<toolbar>
+						<button id="btnHelp"
+							image="/images/icons/light_16x16.gif"
+							tooltiptext="${c:l('btnHelp.tooltiptext')}" />
+					</toolbar>
+
+
+					<panel id="panel_ArticleDialog"
+						title="${c:l('panel_ArticleDialog.title')}"
+						style="margin-bottom:10px" border="normal" collapsible="true">
+						<panelchildren>
+							<grid fixedLayout="true"
+								style="border:0px">
+								<columns>
+									<column width="150px" />
+									<column width="100%" />
+								</columns>
+								<rows>
+									<row>
+										<label
+											id="label_ArticleDialog_artNr"
+											value="${c:l('label_ArticleDialog_artNr.value')}" />
+										<textbox id="artNr"
+											width="100px" />
+									</row>
+									<row>
+										<separator bar="true"></separator>
+										<separator bar="true"></separator>
+									</row>
+									<row>
+										<label
+											id="label_ArticleDialog_artKurzbezeichnung"
+											value="${c:l('label_ArticleDialog_artKurzbezeichnung.value')}" />
+										<textbox id="artKurzbezeichnung"
+											width="99%" />
+									</row>
+									<row>
+										<label
+											id="label_ArticleDialog_artLangbezeichnung"
+											value="${c:l('label_ArticleDialog_artLangbezeichnung.value')}" />
+										<textbox id="artLangbezeichnung"
+											multiline="true" rows="5" width="98%" />
+									</row>
+									<row>
+										<label
+											id="label_ArticleDialog_artPreis"
+											value="${c:l('label_ArticleDialog_artPreis.value')}" />
+										<decimalbox id="artPreis"
+											width="100px" />
+									</row>
+								</rows>
+							</grid>
+						</panelchildren>
+					</panel>
+
+				</div>
+			</north>
+
+			<east border="none"></east>
+			<center border="none"></center>
+			<west border="none"></west>
+
+			<south border="none" margins="1,0,0,0" size="26px">
+				<div id="divSouth" align="right">
+					<hbox spacing="3px" style="padding:3px"
+						align="end">
+						<button id="btnNew" height="20"
+							label="${c:l('btnNew.label')}"
+							tooltiptext="${c:l('btnNew.tooltiptext')}" />
+						<button id="btnEdit" height="20"
+							label="${c:l('btnEdit.label')}"
+							tooltiptext="${c:l('btnEdit.tooltiptext')}" />
+						<button id="btnDelete" height="20"
+							label="${c:l('btnDelete.label')}"
+							tooltiptext="${c:l('btnDelete.tooltiptext')}" />
+						<button id="btnSave" height="20"
+							label="${c:l('btnSave.label')}"
+							tooltiptext="${c:l('btnSave.tooltiptext')}" />
+						<button id="btnClose" height="20"
+							label="${c:l('btnClose.label')}"
+							tooltiptext="${c:l('btnClose.tooltiptext')}" />
+					</hbox>
+				</div>
+			</south>
+
+		</borderlayout>
+
+
+
+	</window>
+
+</zk>
