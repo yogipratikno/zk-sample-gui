@@ -1,0 +1,46 @@
+
+
+
+HttpSession object
+------------------------
+javax.servlet.http.HttpSession 
+is an interface that provides a way to identify a user across more than one page request or visit to a web site.
+
+- identifying can be done with cookies or rewriting URLs too.
+- a HttpSession object can be broken in two categories: State data and application data.
+
+State Data
+-------------
+State data has todo with the details of the connection of the user to the Web server.
+
+isNew(): Allows you to determine wheter the session is new. Note that a session is considered new if the server 
+used only cookie-based sessions, and the client had disable the use of cookies. Otherwise, a session is considered 
+not new when the client joins the session.
+
+getID(): A unique identifier by the servlet engine.
+setMaxInactiveInterval(int interval) / getMaxInactiveInterval() :
+getCreationTime():
+getLastAccessedTime():
+invalidate(): This will immediately invalidate the HttpSession, and unbind any data in it.
+
+
+Application data
+-----------------
+The real power of the HttpSession object is found in the application data. Up the inheritance 
+hierarchy there must be a hastTable, because the session object supports the methods to push and
+pop objects on and off the session. These methods, putValue(String name, Object value) and 
+getValue(java.lang.String name) allow you to get and set data in the session that you can 
+use for any variety of things.
+
+
+
+
+from: http://webdevelopersjournal.com/articles/httpsession_object.html
+
+
+
+
+
+
+Ein Applet ist ein Java-Programm auf der Clientseite (im Browser), während ein Servlet ein Programm auf der Serverseite (im Server) ist.
+aus JavaistaucheineInsel
