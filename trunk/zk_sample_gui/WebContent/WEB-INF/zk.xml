@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<zk>
+
+	<log>
+		<log-base>org.zkoss</log-base>
+	</log>
+
+	<!-- Optional -->
+	<listener>
+		<description> Monitor the statistic</description>
+		<listener-class>de.forsthaus.sampledata.statistic.Statistic
+		</listener-class>
+	</listener>
+
+
+
+
+	<device-config>
+		<device-type>ajax</device-type>
+		<server-push-class>org.zkoss.zkmax.ui.comet.CometServerPush
+		</server-push-class>
+	</device-config>
+
+	<!--
+		<desktop-config> <theme-provider-class>zkthemer.ThemeProvider
+		</theme-provider-class> </desktop-config>
+	-->
+
+	<!--
+		Listener to make sure servlet thread and ZK event thread got the same
+		ThreadLocal values.
+	-->
+	<listener>
+		<description>ThreadLocal Synchronization Listener
+		</description>
+		<listener-class>org.zkoss.zkplus.util.ThreadLocalListener
+		</listener-class>
+	</listener>
+
+	<preference>
+		<name>ThreadLocal</name>
+		<value>
+			org.springframework.security.context.ThreadLocalSecurityContextHolderStrategy=contextHolder;
+			org.springframework.transaction.support.TransactionSynchronizationManager=resources,synchronizations,currentTransactionName,currentTransactionReadOnly,actualTransactionActive;
+			org.springframework.orm.hibernate3.SessionFactoryUtils=deferredCloseHolder;
+			org.springframework.transaction.interceptor.TransactionAspectSupport=transactionInfoHolder;
+		</value>
+	</preference>
+
+	<!-- start SESSION REPLICATION function -->
+	<!--  needed for running a zk application in a CLUSTER -->
+	<system-config>
+		<ui-factory-class>
+			org.zkoss.zk.ui.http.SerializableUiFactory
+		</ui-factory-class>
+	</system-config>
+
+
+	<!-- Configure the error page -->
+	<error-page>
+		<exception-type>java.lang.Throwable
+		</exception-type>
+		<location>/error.zul</location>
+	</error-page>
+
+
+	<!-- Zeichensatz und Groesse -->
+	<language-config>
+		<addon-uri>/WEB-INF/lang-addon.xml </addon-uri>
+	</language-config>
+
+</zk>
+	<!--
+		<language-config> <addon-uri>/WEB-INF/lang-addon.xml </addon-uri>
+		</language-config>
+	-->
+
+	<!--
+		org.springframework.web.context.request.RequestContextHolder=requestAttributesHolder,inheritableRequestAttributesHolder;
+	--> 
+	
