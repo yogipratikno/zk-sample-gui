@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<?page id="roleGroupPage" title="Role Groups" cacheable="false" 
+	language="xul/html" zscriptLanguage="Java" contentType="text/html;charset=UTF-8"?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+	<window id="secRolegroupWindow"
+		use="de.forsthaus.zksample.webui.security.rolegroup.SecRolegroupCtrl"
+		border="none" width="100%" height="300px">
+
+		<style>
+			body { padding: 0 0; /* 0 padding on top and bottom and 0
+			padding on right and left */ }
+		</style>
+
+		<panel id="panel_SecRoleGroup"
+			title="${c:l('panel_SecRoleGroup.title')}" border="none" />
+
+		<borderlayout id="borderlayoutSecRolegroup" height="100%">
+
+			<north border="none" margins="0,0,0,0">
+				<div>
+					<toolbar>
+						<button id="btnHelp"
+							image="/images/icons/light_16x16.gif"
+							tooltiptext="${c:l('btnHelp.tooltiptext')}" />
+					</toolbar>
+				</div>
+			</north>
+
+			<center border="none" margins="0,0,0,0">
+				<div id="divCenterSecRolegroup">
+
+					<tabbox id="tabBoxRoles" width="100%">
+						<tabs>
+							<tab id="tab_SecRoleGroup_Details"
+								label="${c:l('tab_SecRoleGroup_Details.label')}" />
+						</tabs>
+
+						<tabpanels>
+
+							<!-- Tab Details -->
+							<tabpanel style="border: 0px">
+
+								<columnlayout>
+									<columnchildren width="30%"
+										style="padding: 2px">
+										<panel
+											id="panel_SecRoleGroup_Roles"
+											title="${c:l('panel_SecRoleGroup_Roles.title')}"
+											style="margin-bottom:10px" border="none">
+											<panelchildren>
+
+
+												<borderlayout
+													id="borderLayout_Roles">
+													<center
+														autoscroll="true" border="none">
+														<div>
+
+															<paging
+																id="paging_ListBoxSecRole" pageSize="15" />
+															<listbox
+																id="listBoxSecRole" width="99.5%" height="100%"
+																multiple="false">
+																<listhead
+																	sizable="true">
+																	<listheader
+																		id="listheader_SecRoleGroup_Rolename"
+																		image="/images/icons/create_doc.gif" sort="auto"
+																		width="100%"
+																		label="${c:l('listheader_SecRoleGroup_Rolename.label')}" />
+																</listhead>
+															</listbox>
+
+														</div>
+													</center>
+												</borderlayout>
+
+											</panelchildren>
+										</panel>
+
+									</columnchildren>
+
+
+
+									<columnchildren width="70%"
+										style="padding: 2px">
+										<panel
+											id="panel_SecRoleGroup_Groups"
+											title="${c:l('panel_SecRoleGroup_Groups.title')}"
+											style="margin-bottom:10px" border="none">
+											<panelchildren>
+
+
+												<borderlayout
+													id="borderLayout_Groups">
+													<center
+														autoscroll="true" border="none">
+														<div>
+
+															<paging
+																id="paging_ListBoxSecRolegroup" pageSize="15" />
+															<listbox
+																id="listBoxSecRolegroup" width="99.5%" height="100%"
+																multiple="false">
+																<listhead
+																	sizable="true">
+																	<listheader
+																		id="listheader_SecRoleGroup_GrantedRight"
+																		image="/images/icons/exdDialogAction1.gif" sort="none"
+																		width="20%"
+																		label="${c:l('listheader_SecRoleGroup_GrantedRight.label')}" />
+																	<listheader
+																		id="listheader_SecRoleGroup_GroupName"
+																		image="/images/icons/create_doc.gif" sort="auto"
+																		width="80%"
+																		label="${c:l('listheader_SecRoleGroup_GroupName.label')}" />
+																</listhead>
+															</listbox>
+														</div>
+													</center>
+												</borderlayout>
+
+
+
+
+
+											</panelchildren>
+										</panel>
+									</columnchildren>
+
+
+								</columnlayout>
+
+
+							</tabpanel>
+						</tabpanels>
+					</tabbox>
+
+
+				</div>
+			</center>
+
+			<east border="none"></east>
+			<west border="none"></west>
+
+			<south border="none" margins="1,0,0,0" size="26px">
+				<div id="divSouthSecUserrole" align="right">
+					<hbox spacing="3px" style="padding:3px"
+						align="end">
+						<button id="btnSave" height="20"
+							label="${c:l('btnSave.label')}"
+							tooltiptext="${c:l('btnSave.tooltiptext')}" />
+						<button id="btnClose" height="20"
+							label="${c:l('btnClose.label')}"
+							tooltiptext="${c:l('btnClose.tooltiptext')}" />
+					</hbox>
+				</div>
+			</south>
+
+		</borderlayout>
+
+
+	</window>
+</zk>
+
+
