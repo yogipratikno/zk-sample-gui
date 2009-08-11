@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<zk xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+	<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+	<window id="window_BranchesList"
+		use="de.forsthaus.zksample.webui.branch.BranchListCtrl" border="none"
+		width="100%">
+
+		<style>
+			body { padding: 0 0; /* 0 padding on top and bottom and 0
+			padding on right and left */ }
+		</style>
+
+		<panel id="panel_BranchList"
+			title="${c:l('panel_BranchList.title')}" border="none" />
+
+		<toolbar>
+			<button id="btnHelp" image="/images/icons/light_16x16.gif"
+				tooltiptext="${c:l('btnHelp.tooltiptext')}" />
+			<button id="button_BranchList_NewBranch"
+				image="/images/icons/page_detail.gif"
+				label="${c:l('button_BranchList_NewBranch.label')}"
+				tooltiptext="${c:l('button_BranchList_NewBranch.tooltiptext')}" />
+			<button id="button_BranchList_PrintBranches"
+				image="/images/icons/print.gif"
+				tooltiptext="${c:l('button_BranchList_PrintBranches.tooltiptext')}" />
+		</toolbar>
+
+		<hbox style="padding: 3px">
+			<space />
+			<checkbox id="checkbox_Branch_ShowAll"
+				label="${c:l('checkbox_Branch_ShowAll.label')}" />
+			<separator bar="true" orient="vertical" />
+
+			<label id="lbl_Branch_Description"
+				value="${c:l('lbl_Branch_Description.value')}" />
+			<textbox id="tb_Branch_Name" width="120px" />
+			<button id="button_BranchList_Search_BranchName"
+				image="/images/icons/search.gif"
+				label="${c:l('button_BranchList_Search_BranchName.label')}"
+				tooltiptext="${c:l('button_BranchList_Search_BranchName.tooltiptext')}" />
+			<separator bar="true" orient="vertical" />
+
+			<label id="lbl_Branch_No"
+				value="${c:l('lbl_Branch_No.value')}" />
+			<textbox id="tb_Branch_No" width="120px" />
+			<button id="button_BranchList_Search_BranchNo"
+				image="/images/icons/search.gif"
+				label="${c:l('button_BranchList_Search_BranchNo.label')}"
+				tooltiptext="${c:l('button_BranchList_Search_BranchNo.tooltiptext')}" />
+			<separator bar="true" orient="vertical" />
+		</hbox>
+
+		<borderlayout id="borderLayout_branchList">
+
+			<north border="none" height="26px">
+				<paging id="paging_BranchList" pageSize="20" />
+			</north>
+
+			<center border="normal">
+
+				<listbox id="listBoxBranch" vflex="true"
+					tooltiptext="${c:l('listbox.tooltiptext')}" width="99.5%"
+					height="100%" multiple="false">
+					<listhead sizable="true">
+						<listheader id="listheader_Branch_Description"
+							image="/images/icons/sequence.gif"
+							label="${c:l('listheader_Branch_Description.label')}" sort="auto"
+							width="25%" />
+						<listheader id="listheader_Branch_No"
+							image="/images/icons/builder.gif"
+							label="${c:l('listheader_Branch_No.label')}" sort="auto"
+							width="20%" />
+					</listhead>
+				</listbox>
+
+			</center>
+
+			<south border="none">
+				<separator />
+			</south>
+
+		</borderlayout>
+
+
+	</window>
+</zk>
