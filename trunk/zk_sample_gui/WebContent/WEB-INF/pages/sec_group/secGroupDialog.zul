@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<?page id="secRightDialogPage" title="Rights Dialog" cacheable="false" 
+	language="xul/html" zscriptLanguage="Java" contentType="text/html;charset=UTF-8"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+	<window id="secGroupDialogWindow"
+		title="${c:l('secGroupDialogWindow.title')}" border="none"
+		use="de.forsthaus.zksample.webui.security.group.SecGroupDialogCtrl"
+		closable="true" width="500px" height="300px" sizable="true">
+
+		<style>
+			body { padding: 0 0; /* 0 padding on top and bottom and 0
+			padding on right and left */ }
+		</style>
+
+		<borderlayout id="borderlayoutSecGroup">
+
+			<north border="none" margins="0,0,0,0">
+				<div>
+					<toolbar>
+						<button id="btnHelp"
+							image="/images/icons/light_16x16.gif"
+							tooltiptext="${c:l('btnHelp.tooltiptext')}" />
+					</toolbar>
+				</div>
+			</north>
+
+			<center border="none" margins="0,0,0,0">
+				<div id="divCenterSecGroup">
+
+					<panel id="panel_SecGroupDialog"
+						title="${c:l('panel_SecGroupDialog.title')}"
+						style="margin-bottom:10px" border="normal" collapsible="true">
+						<panelchildren>
+							<grid fixedLayout="true"
+								style="border:0px">
+								<columns>
+									<column width="150px" />
+									<column width="100%" />
+								</columns>
+								<rows>
+									<row>
+										<label
+											id="label_SecGroupDialog_grpShortdescription"
+											value="${c:l('label_SecGroupDialog_grpShortdescription.value')}" />
+										<textbox
+											id="grpShortdescription" width="99%" />
+									</row>
+									<row>
+										<separator bar="true">
+										</separator>
+										<separator bar="true">
+										</separator>
+									</row>
+									<row>
+										<label
+											id="label_SecGroupDialog_grpLongdescription"
+											value="${c:l('label_SecGroupDialog_grpLongdescription.value')}" />
+										<textbox id="grpLongdescription"
+											width="99%" multiline="true" rows="5" />
+									</row>
+
+								</rows>
+							</grid>
+						</panelchildren>
+					</panel>
+
+
+				</div>
+			</center>
+
+			<east border="none"></east>
+			<west border="none"></west>
+
+			<south border="none" margins="1,0,0,0" size="26px">
+				<div id="divSouth" align="right">
+					<hbox spacing="3px" style="padding:3px"
+						align="end">
+						<button id="btnNew" height="20"
+							label="${c:l('btnNew.label')}"
+							tooltiptext="${c:l('btnNew.tooltiptext')}" />
+						<button id="btnEdit" height="20"
+							label="${c:l('btnEdit.label')}"
+							tooltiptext="${c:l('btnEdit.tooltiptext')}" />
+						<button id="btnDelete" height="20"
+							label="${c:l('btnDelete.label')}"
+							tooltiptext="${c:l('btnDelete.tooltiptext')}" />
+						<button id="btnSave" height="20"
+							label="${c:l('btnSave.label')}"
+							tooltiptext="${c:l('btnSave.tooltiptext')}" />
+						<button id="btnClose" height="20"
+							label="${c:l('btnClose.label')}"
+							tooltiptext="${c:l('btnClose.tooltiptext')}" />
+					</hbox>
+				</div>
+			</south>
+
+		</borderlayout>
+
+
+	</window>
+</zk>
+
+
