@@ -1,0 +1,64 @@
+<?page id="indexPage" title="ZKoss Sample App - Entry Page" cacheable="false" 
+	language="xul/html" zscriptLanguage="Java"?>
+<?meta content="text/html; charset=UTF-8" 	pageEncoding="UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c" ?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+
+
+<zk xmlns="http://www.zkoss.org/2005/zul"
+	xmlns:h="http://www.w3.org/1999/xhtml"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.zkoss.org/2005/zul http://www.zkoss.org/2005/zul/zul.xsd">
+
+	<window id="startWindow" title="ZKoss sample application "
+		border="none" width="100%" height="100%"
+		use="de.forsthaus.zksample.InitApplication">
+
+		<style>
+			body { padding: 0 0; /* 0 padding on top and bottom and 0
+			padding on right and left */ }
+		</style>
+
+		<borderlayout width="100%" height="100%">
+			<north id="bl_north" border="none"
+				style="background-color: #EBEBEB" flex="true">
+
+				<div
+					style="background-color: #EBEBEB; padding-top: 10px; padding-left: 10px">
+					<div width="200px" align="left"
+						style="background-color: #EBEBEB; padding: 10px">
+
+						<button id="btn_zkoss" style="border: 0px"
+							image="/images/zkpowered_60x60.png" href="http://www.zkoss.org"
+							tooltiptext="Go to the zkoss framework site" />
+					</div>
+					<div width="140px"
+						style="background-color: #EBEBEB">
+						<separator bar="true" />
+					</div>
+					<div width="200px"
+						style="background-color: #EBEBEB; padding: 10px">
+						<button id="btn_ii" label="click me !"
+							image="/images/icons/monitorView.gif" href="/pages/index.zul"
+							tooltiptext="Go to the sample application" width="120px" />
+					</div>
+				</div>
+
+			</north>
+
+			<center id="bl_center" border="none"
+				style="background-color: #EBEBEB" flex="true" />
+
+			<south id="bl_south" border="none"
+				style="background-color: #EBEBEB" height="32px" />
+
+		</borderlayout>
+
+	</window>
+</zk>
+
+<!-- 
+	style="background-image:url(${c:encodeURL('/images/sample.jpg')}) "
+	style="background-image:url(${c:encodeURL('/images/sample.jpg')  }); border: 'none'; background-repeat:no-repeat; "
+-->
