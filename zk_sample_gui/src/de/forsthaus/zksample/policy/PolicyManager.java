@@ -21,7 +21,8 @@ import de.forsthaus.backend.service.UserService;
 import de.forsthaus.zksample.policy.model.UserImpl;
 
 /**
- * 
+ * This class implements the spring-security UserDetailService.<br>
+ * It's been configured in the spring security xml contextfile.<br>
  * 
  * @author bj
  * @see package de.forsthaus.policy

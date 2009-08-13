@@ -10,6 +10,11 @@ import de.forsthaus.backend.service.LoginLoggingService;
 import de.forsthaus.zksample.policy.model.UserImpl;
 
 /**
+ * This class is called from spring aop as an aspect and is for logging <br>
+ * the Login of a user. It is configurated in the <br>
+ * '/WebContent/WEB-INF/SpringSecurityContext.xml' <br>
+ * Logs success and fails, sessionID, timestamp and remoteIP. <br>
+ * 
  * @author bj
  * 
  */

@@ -44,8 +44,7 @@ public class IndexCtrl extends BaseCtrl implements Serializable {
 
 		/* Create the singleton Workspace for the Application */
 		/* CLUSTERING ???????????? */
-		ApplicationWorkspace.getInstance();
-
+		// ApplicationWorkspace.getInstance();
 	}
 
 	/**
