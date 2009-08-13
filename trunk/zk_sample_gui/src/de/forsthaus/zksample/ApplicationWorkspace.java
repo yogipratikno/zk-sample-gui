@@ -21,8 +21,6 @@ public class ApplicationWorkspace implements Serializable {
 	private static final long serialVersionUID = -1397646202890802880L;
 	private transient final static Logger logger = Logger.getLogger(ApplicationWorkspace.class);
 
-	// monitor this application
-
 	/**
 	 * Default Constructor, cannot invoked from outer this class. <br>
 	 */

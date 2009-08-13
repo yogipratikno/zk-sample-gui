@@ -1,27 +1,3 @@
-/**
- * MainMenu Controller
- * -------------------
- * 
- * Build the menu with the MenuTree + MenuItem classes.
- * 
- * All menuItems calls that are used in the application must be fixed 
- * coded in the doMenuItem() methode.
- * 
- * By creating the menuItems we give them the used id's from the doMenuItem() methode. 
- * 
- * The admin can create/modify  the usergroups/usergoupsRights/usergroupMembers
- * for the users with the given MenuCategories/MenuItems.  
- * 
- * 
- * 		mt = new MenuTree(this, "OfficeData", "Office Data", true);
- *		mt.addMenuItem("menuOfficeData_Customers", "Customers");
- *		mt.addMenuItem("menuOfficeData_Orders", "Orders");
- *		getMainMenuWindow().appendChild(mt);
- *
- *
- *
- */
-
 package de.forsthaus.zksample.common.menu;
 
 import java.io.Serializable;
@@ -54,6 +30,31 @@ import de.forsthaus.zksample.common.menu.sub.MainDataMenuTree;
 import de.forsthaus.zksample.common.menu.sub.OfficeDataMenuTree;
 import de.forsthaus.zksample.common.menu.util.ZkossMenuUtil;
 import de.forsthaus.zksample.webui.util.BaseCtrl;
+
+/**
+ * MainMenu Controller
+ * -------------------
+ * 
+ * Build the menu with the MenuTree + MenuItem classes.
+ * 
+ * All menuItems calls that are used in the application must be fixed 
+ * coded in the doMenuItem() methode.
+ * 
+ * By creating the menuItems we give them the used id's from the doMenuItem() methode. 
+ * 
+ * The admin can create/modify  the usergroups/usergoupsRights/usergroupMembers
+ * for the users with the given MenuCategories/MenuItems.  
+ * 
+ * 
+ * 		mt = new MenuTree(this, "OfficeData", "Office Data", true);
+ *		mt.addMenuItem("menuOfficeData_Customers", "Customers");
+ *		mt.addMenuItem("menuOfficeData_Orders", "Orders");
+ *		getMainMenuWindow().appendChild(mt);
+ *
+ * @author sge
+ * @changes bj create the menu by java. 
+ *
+ */
 
 public class MainMenuCtrl extends BaseCtrl implements Serializable {
 

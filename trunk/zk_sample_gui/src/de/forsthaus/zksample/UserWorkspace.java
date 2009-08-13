@@ -23,7 +23,7 @@ import de.forsthaus.zksample.policy.model.UserImpl;
  * 1. Access the rights that the user have. <br>
  * 2. The office for that the user are logged in. <br>
  * 
- * 
+ * author: bj
  * 
  */
 public class UserWorkspace implements Serializable {
@@ -57,7 +57,7 @@ public class UserWorkspace implements Serializable {
 	 */
 	public UserWorkspace() {
 		if (logger.isDebugEnabled()) {
-			logger.debug("create new Workspace [" + this + "]");
+			logger.debug("create new User Workspace [" + this + "]");
 		}
 
 		// speed up the ModalDialogs while disabling the animation
@@ -65,7 +65,7 @@ public class UserWorkspace implements Serializable {
 	}
 
 	/**
-	 * Logout with the spring-security.<br>
+	 * Logout with the spring-security logout action-URL.<br>
 	 * Therefore we make a sendRedirect() to the logout uri we <br>
 	 * have configured in the spring-config.br>
 	 */

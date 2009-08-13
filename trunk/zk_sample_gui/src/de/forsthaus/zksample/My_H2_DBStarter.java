@@ -18,6 +18,18 @@ import org.h2.util.StringUtils;
  * This class can be used to start the H2 TCP server (or other H2 servers, for
  * example the PG server) inside a web application container such as Tomcat or
  * Jetty. It can also open a database connection.
+ * 
+ * Reading a sql-textfile that holds the ddl script for creating the <br>
+ * tables and the sample data records. <br>
+ * This class is called automatically by starting the project under tomcat. <br>
+ * Please have a look at the web.xml. <br>
+ * <br>
+ * < listener > <br>
+ * < listener-class >de.forsthaus.zksample.My_H2_DbStarter< /listener-class > <br>
+ * < /listener > <br>
+ * 
+ * 
+ * @changes Stephan Gerth / sge(at)forsthaus(de)
  */
 public class My_H2_DBStarter implements ServletContextListener {
 
