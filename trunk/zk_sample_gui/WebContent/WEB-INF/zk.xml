@@ -65,7 +65,7 @@
 	</error-page>
 
 
-	<!-- Zeichensatz und Groesse -->
+	<!-- Font and Size -->
 	<language-config>
 		<addon-uri>/WEB-INF/lang-addon.xml </addon-uri>
 	</language-config>
