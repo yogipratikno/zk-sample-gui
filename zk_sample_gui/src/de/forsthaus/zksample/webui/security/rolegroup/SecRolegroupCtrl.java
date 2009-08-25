@@ -34,7 +34,7 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
 
 /**
  * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
- * This is the controller class for the orderPositionDialog.zul file.<br>
+ * This is the controller class for the secRolegroup.zul file.<br>
  * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
  * <br>
  * This is the controller class for the Security RoleGroup Page described in the
