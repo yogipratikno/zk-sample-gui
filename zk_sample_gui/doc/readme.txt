@@ -1,4 +1,5 @@
-project-name: zk_sample_gui needs project zk_sample_db (backend)
+project-name: zk_sample_gui 
+needed projects:  zk_sample_db (backend)
 author: Stephan Gerth
 project-typ: Eclipse 3.4
 -------------------------------------------------------------------------------
@@ -25,12 +26,12 @@ de.forsthaus.zksample
       The Controller for the zul-file 'WebContent/index.zul' that is the first
       page that is shown. It handles the showing of the statistic data / table records.
   --> My_H2_DBStarter.java
-      Called from the web.xml. This class do start the H2 database server and
-      creates the tables and the demodata from the file  
-      de.forsthaus.sampledata.createSampleData.sql     
+      Called from the web.xml. This class starts the H2 database server and
+      creates the tables and the demo data from the text-file  
+      'de.forsthaus.sampledata.createSampleData.sql'     
   --> ObjectMaschine.java
-      This class creates the demodata randomly from txt-files resides under 
-      /WebContent/res/*.txt     
+      This class creates additionally customer records randomly from txt-files 
+      resides under '/WebContent/res/*.txt'     
   --> UserWorkspace.java
       This class creates ONE UserWorkspace for every logged in User.
       Over this class we get access to the grantedRights for the user.       
@@ -73,13 +74,14 @@ de.forsthaus.zksample.policy.model
   --> UserImpl.java
       The User implementation of spring-security framework user class.
 
-####################################      
-#   de.forsthaus.zksample.webui    #
-####################################
-All webui-classes are seperated in 
-...webui.modulName and ...webui.modulName.Model
-Where .modulname holds the Controllers for the Lists and Dialogs 
-and .model holds the renderers and helper classes.
+#######################################################################      
+#                      de.forsthaus.zksample.webui                    #
+#######################################################################
+#      All webui-classes are seperated in                             #
+#    ...webui.modulName and ...webui.modulName.Model                  #
+#   Where .modulname holds the Controllers for the Lists and Dialogs  # 
+#   and .model holds the renderers and helper classes.                #
+#######################################################################
 
 de.forsthaus.zksample.webui.article
   --> ArticleDialogCtrl.java
@@ -170,10 +172,12 @@ de.forsthaus.zksample.webui.reports.util
   --> JRreportWindow.java
       Capsulates the JasperReport Component in a modal window
 
-#############################################      
-#   de.forsthaus.zksample.webui.security    #
-#############################################
-Management pages for the security
+#######################################################################      
+#                 de.forsthaus.zksample.webui.security                #
+#######################################################################      
+#       Controllers for the management pages of the security.         #
+#       User roles/groups ...                                         #
+#######################################################################      
 
 de.forsthaus.zksample.webui.security.group
   --> SecGroupDialogCtrl.java
@@ -196,32 +200,256 @@ de.forsthaus.zksample.webui.security.groupright
       Controller for '/WebContent/WEB-INF/pages/sec_groupright/secGroupRight.zul'
 
 de.forsthaus.zksample.webui.security.groupright.model
+  --> SecGrouprightDialogGroupListModelItemRenderer.java
+      Listbox ListItem renderer
+  --> SecGrouprightListModelItemRenderer.java
+      Listbox ListItem renderer
+  --> SecGrouprightRightComparator.java
+      Comparator for the sorting the listbox data
+  --> SecGrouprightRightListModelItemRenderer.java
+      Listbox ListItem renderer
 
 de.forsthaus.zksample.webui.security.right
+  --> SecRightDialogCtrl.java
+      Controller for '/WebContent/WEB-INF/pages/sec_right/secRightDialog.zul'
+  --> SecRightListCtrl.java
+      Controller for '/WebContent/WEB-INF/pages/sec_right/secRightList.zul'
+      
 de.forsthaus.zksample.webui.security.right.model
+  --> SecRightComparator.java
+      Comparator for the sorting the listbox data
+  --> SecRightListModelItemRenderer.java
+      Listbox ListItem renderer
+  --> SecRightSecTypListModelItemRenderer.java
+      Listbox ListItem renderer
 
 de.forsthaus.zksample.webui.security.role
+  --> SecRoleDialogCtrl.java
+      Controller for '/WebContent/WEB-INF/pages/sec_role/secRoleDialog.zul'
+  --> SecRoleListCtrl.java
+      Controller for '/WebContent/WEB-INF/pages/sec_role/secRoleList.zul'
+
 de.forsthaus.zksample.webui.security.role.model
+  --> SecRoleComparator.java
+      Comparator for the sorting the listbox data
+  --> SecRoleListModelItemRenderer.java
+      Listbox ListItem renderer
 
 de.forsthaus.zksample.webui.security.rolegroup
+  --> SecRolegroupCtrl.java
+      Controller for '/WebContent/WEB-INF/pages/sec_rolegroup/secRolegroup.zul'
+
 de.forsthaus.zksample.webui.security.rolgroup.model
+  --> SecRolegroupGroupComparator.java
+      Comparator for the sorting the listbox data
+  --> SecRolegroupGroupListModelItemRenderer.java
+      Listbox ListItem renderer
+  --> SecRolegroupRoleComparator.java
+      Comparator for the sorting the listbox data
+  --> SecRolegroupRoleListModelItemRenderer.java
+      Listbox ListItem renderer
 
 de.forsthaus.zksample.webui.security.userrole
+  --> SecUserroleCtrl.java
+      Controller for '/WebContent/WEB-INF/pages/sec_userrole/secUserrole.zul'
+
 de.forsthaus.zksample.webui.security.userrole.model
+  --> SecUserroleRoleComparator.java
+      Comparator for the sorting the listbox data
+  --> SecUserroleRoleListModelItemRenderer.java
+      Listbox ListItem renderer
+  --> SecUserroleUserComparator.java
+      Comparator for the sorting the listbox data
+  --> SecUserroleUserListModelItemRenderer.java
+      Listbox ListItem renderer
 
 de.forsthaus.zksample.webui.user
+  --> UserDialogCtrl.java
+      Controller for '/WebContent/WEB-INF/pages/user/userDialog.zul'
+  --> UserListCtrl.java
+      Controller for '/WebContent/WEB-INF/pages/user/userList.zul'
+
 de.forsthaus.zksample.webui.user.model
+  --> LanguageListModelItemRenderer.java
+      Listbox ListItem renderer
+  --> UserComparator.java
+      Comparator for the sorting the listbox data
+  --> UserListModelItemRenderer.java
+      Listbox ListItem renderer
+  --> UserRolesListModelItemRenderer.java
+      Listbox ListItem renderer
 
 de.forsthaus.zksample.webui.util
+  --> BaseCtrl.java
+      Base controller for all zul-files that will extends the window
+      component. This controller does the autowireing/binding/forwarding stuff
+  --> ButtonStatusCtrl.java
+      Button controller for the CRUD buttons in the dialog windows in
+      the south area of the borderlayout.
+  --> MultiLineMessageBox.java
+      Extended messagebox that can show multilined messages.
+      Used a messagebox zul-template at '/WEB-INF/pages/util/multiLineMessageBox.zul'
+  --> NoEmptyAndEqualStringsConstraint.java
+      Constraint for compareing the value-strings from a textbox with a string.
+      Used for compare the password with the re-typed password in the userDialog.
+
 de.forsthaus.zksample.webui.util.pagging
+  --> PagedListWrapper.java
+      Helper class for allow the sorting of listheaders by paged records.
+
 de.forsthaus.zksample.webui.util.searching
+  --> SearchOperatorListModelItemRenderer.java
+      Listbox ListItem renderer
+  --> SearchOperators.java
+      this class represents a few types of search operators corresponding to 
+      the com.trg.search.Search.java class from the 
+      Hibernate-Generic-DAO framework. 
+ 
+#######################################################################      
+#                               /src                                  #
+#######################################################################      
 
-
+  --> applicationContext-db.xml
+      Spring framework configuration file. 
+      Configures the Transaction Manager. 
+      - All dao-methods are single transacted.
+      - Service methods can contain several dao methods and all together 
+        are handled as one transaction.
+      Configures the path to the jdbc.properties   
+      Configures the datasource   
+      Remarked: Jindi-Datasource, that point to the entries in the
+                server.xml of tomcat, if using a connection from tomcat
+                to the database.
+  
+  --> jdbc.properties
+      Holds the vars for configuring the jdbc properties.
+  
+  --> log4j.xml
+      Configures the logging parameters.
+   
+ 
+ 
+#######################################################################      
+#                             /WebContent                             #
+#######################################################################      
+ 
+  --> index.zul
+      The entry zul-page.
+      Controller: 'de.forsthaus.zksample.InitApplication.java'
+      Shows the grid for the count of table records and statistic data.
+  --> error.zul
+      The error zul-page
+  --> zkloginDialog.zul
+      The login zul-page        
+      Controller: 'de.forsthaus.zksample.webui.login.ZkLoginDialogCtrl.java'
   
       
+#######################################################################      
+#                         /WebContent/images/icons                    #
+#######################################################################      
+      
+      Used images and icons.
       
       
+#######################################################################      
+#                         /WebContent/pages                           #
+#######################################################################      
       
+  --> index.zul
+      Controller: 'de.forsthaus.zksample.IndexCtrl.java'
+      The index zul-page for the application that holds the borderlayout
+      for the areas menu, content, statusBar ..
+      
+#######################################################################      
+#                         /WebContent/res                             #
+#######################################################################      
+            
+      Textfiles that holds sample data. These datas are used by
+      randomly creating sample customer records.
+      Files are for city, last-name, surname, blobs, ...
+      Controller: 'de.forsthaus.zksample.ObjectMaschine.java      
+
   
+#######################################################################      
+#                         /WebContent/WEB-INF                         #
+#######################################################################
+
+  --> i3-label_de_DE.properties
+      german language file for localisation
+  --> i3-label.properties 
+      default language (english) file for localisation
+  --> lang-addon.xml
+      ZK configuration file for setting the font-size
+  --> SpringSecurityContext.xml
+      Spring-Security framework configuration file.
+  --> web.xml
+      The configuration file for the servlet container (tomcat).
+  --> zk.xml
+      ZK configuration file              
            
 
+#######################################################################      
+#                         /WebContent/WEB-INF/pages                   #
+#######################################################################
+
+  --> mainmenu.zul
+      Controller: 'de.forsthaus.zksample.common.menu.MainMenuCtrl.java'
+      Holds the window component. The menu is created dynamically by
+      java code.
+  --> welcome.zul
+      Holds the welcome content that is showing on application start
+      or click the Start button in the menu
+
+  --> /article/articleDialog.zul
+  --> /article/articleList.zul
+  --> /branch/branchDialog.zul
+  --> /branch/branchList.zul
+  --> /chat/chat.zul
+  --> /customer/customerDialog.zul
+  --> /customer/customerList.zul
+  --> /customer/customerSearchDialog.zul
+  --> /guestbook/guestBookDialog.zul
+  --> /guestbook/guestBookList.zul
+  --> /order/orderDialog.zul
+  --> /order/orderList.zul
+  --> /order/orderPositionDialog.zul
+  --> /sec_group/secGroupDialog.zul
+  --> /sec_group/secGroupList.zul
+  --> /sec_groupright/addGrouprightDialog.zul
+  --> /sec_groupright/secGroupright.zul
+  --> /sec_loginlog/secLoginLogList.zul
+  --> /sec_right/secRightDialog.zul
+  --> /sec_right/secRightList.zul
+  --> /sec_role/secRoleDialog.zul
+  --> /sec_role/secRoleList.zul
+  --> /sec_rolegroup/secRolegroup.zul
+  --> /sec_user/userDialog.zul
+  --> /sec_user/userList.zul
+  --> /sec_userrole/secUserrole.zul
+  --> /util/multiLineMessageBox.zul
+  
+ 
+#######################################################################      
+#                         /WebContent/WEB-INF/reports                 #
+#######################################################################
+
+     Jasper report files for a test report that includes two subreports.
+     Started from: 'de.forsthaus.zksample.webui.order.OrderDialogCtrl.doPrintReport()'
+  
+
+#######################################################################      
+#                         /WebContent/WEB-INF/tld                     #
+#######################################################################
+
+    Needed ZK stuff. Copy these folder from the zk-distibution.
+    
+
+#######################################################################      
+#                         /WebContent/WEB-INF/xsd                     #
+#######################################################################
+
+    Needed ZK stuff. Copy these folder from the zk-distibution.
+  
+  
+  
+      
