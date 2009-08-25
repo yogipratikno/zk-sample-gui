@@ -6,7 +6,7 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Textbox;
 
 /**
- * Compare the value-strings from a textbox with a string.<br>
+ * Constraint for compareing the value-strings from a textbox with a string.<br>
  * Throws errormessage if not equals. Used in the userDialog for checking that
  * the reTyped password<br>
  * is same as first written password.<br>
