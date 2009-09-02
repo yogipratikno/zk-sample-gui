@@ -511,10 +511,13 @@ Rights
   1. setting it visible/unvisible
   2. setting it readonly 
 
-  we set it by checking in the users Workspace the isAllowed method. This methode
-  do only search the String in the grantedRights List of the user and results a
-  true/false.
-  btnSave.setVisible(workspace.isAllowed("button_BranchDialog_btnSave"));
+  For setting the right we call in the users Workspace the isAllowed(String right) method. 
+  This methode do only searching the String in the list of the users 'grantedRights'  
+  and results a  true/false.
+      btnSave.setVisible(workspace.isAllowed("button_BranchDialog_btnSave"));
+
+
+
 
 
 
