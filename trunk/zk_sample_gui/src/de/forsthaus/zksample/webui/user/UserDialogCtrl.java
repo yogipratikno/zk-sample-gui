@@ -524,10 +524,6 @@ public class UserDialogCtrl extends BaseCtrl implements Serializable {
 		usrPasswordRetype.setConstraint(new NoEmptyAndEqualStringsConstraint(usrPassword));
 		usrFirstname.setConstraint("NO EMPTY");
 		usrLastname.setConstraint("NO EMPTY");
-
-		// TODO helper textbox for selectedItem ?????
-		// rigType.getSelectedItem()) {
-
 	}
 
 	/**
