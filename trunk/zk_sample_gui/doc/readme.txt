@@ -452,4 +452,70 @@ de.forsthaus.zksample.webui.util.searching
   
   
   
-      
+
+Security-Concept:
+=================
+- The Administration menu point includes the whole security administration, the users and Login log list.
+- The security is build on top of the spring-security framework and is extended for groups and group-rights. 
+- In the most simple examples the roles are defined for ADMIN_ROLE, USER_ROLE or GUEST_ROLE.
+
+   This is to small for us. 
+   Because what is a user ??? 
+   A user in a bigger business firm can works in a department of 
+   booking, invoicing, inventory, production, sales, promotion ...
+   And these categories can have sub categories. So in practice we need a finer 
+   granulated access for these users.
+   Secondly we go away from the xml configuration for assigning the roles to a page or event. 
+   We do it in database tables and do extend the security for a group and group-right. 
+   Further we need not a new tomcat start to consider changes in the scurity of pages or events.
+
+- At last: A right in the world of spring-security is only a STRING 
+ While we secure the application in the CODE and manage these in tables WE and OUR CUSTOMERS would 
+ have the abbility to customize the access/right. 
+ While we do not secure with a ROLE-String either we secure with a RIGHT-String we can assign 
+ a group of right-strings to a logically closed GROUP. 
+ So RIGHTS, GROUPS and GROUP-RIGHTS are defined by the developer who knows what compoents 
+ are in the application and are working together.
+ All others like ROLES and ROLE-GROUPS can be modified/extended by the customer if needed/allowed.
+
+
+User (have)
+        \-- Roles (have)
+                     \-- Role-Groups (have) extended for my needs
+                                        \-- Group-Rights (have) extended for my needs
+                                                            \-- Rights
+
+Users
+- All users have the right to edit her own peronal data like the name, password.
+- User Roles are assigned in the administration area [User Roles].
+  
+User-Roles
+- Here are the roles assigned to the Users. It's possible to assign several Roles to a user.  
+  
+Roles
+- Predefined Roles. 
+
+Role-Groups
+- Predefined Role-Groups.      
+
+Groups
+- Predefined Groups.
+
+Group-Rights
+- Predefined Group-Rights.
+
+Rights
+- Predefined Rights. Each used component can have a right as a String. 
+
+  We can secure a component in code by two methods:
+  1. setting it visible/unvisible
+  2. setting it readonly 
+
+  we set it by checking in the users Workspace the isAllowed method. This methode
+  do only search the String in the grantedRights List of the user and results a
+  true/false.
+  btnSave.setVisible(workspace.isAllowed("button_BranchDialog_btnSave"));
+
+
+
+ 
