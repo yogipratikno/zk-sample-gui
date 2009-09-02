@@ -549,12 +549,10 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 		kunMatchcode.setConstraint("NO EMPTY");
 		kunName1.setConstraint("NO EMPTY");
 		kunOrt.setConstraint("NO EMPTY");
-		// TODO helper textbox for selectedItem ?????
-		// kunBranche.setConstraint(new SimpleConstraint("NO EMPTY"));
 	}
 
 	/**
-	 * Disables the Validation by setting the empty constraints.
+	 * Disables the Validation by setting the constraints empty.
 	 */
 	private void doRemoveValidation() {
 
@@ -691,6 +689,7 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 		}
 
 		// fill the customer object with the components data
+		// and validate the values if there are constraints attached.
 		kunde.setKunNr(kunNr.getValue());
 		kunde.setKunMatchcode(kunMatchcode.getValue());
 		kunde.setKunName1(kunName1.getValue());
