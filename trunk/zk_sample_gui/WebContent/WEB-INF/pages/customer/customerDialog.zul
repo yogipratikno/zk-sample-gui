@@ -37,8 +37,8 @@
 						<tabs>
 							<tab id="tabCustomerDialogAddress"
 								label="${c:l('tabCustomerDialogAddress.label')}" />
-							<tab id="tabCustomerDialogAddition"
-								label="${c:l('tabCustomerDialogAddition.label')}" />
+							<tab id="tabCustomerDialogChart"
+								label="${c:l('tabCustomerDialogChart.label')}" />
 							<tab id="tabCustomerDialogOrders"
 								label="${c:l('tabCustomerDialogOrders.label')}" />
 							<tab id="tabCustomerDialogMemos"
@@ -333,9 +333,9 @@
 
 							</tabpanel>
 
-							<tabpanel id="tabPanelCustomerAddition"
+							<tabpanel id="tabPanelCustomerDialogChart"
 								height="100%" style="border: 0px">
-								Text im Tabpanel 2
+								Charts
 							</tabpanel>
 
 							<tabpanel id="tabPanelCustomerOrders"

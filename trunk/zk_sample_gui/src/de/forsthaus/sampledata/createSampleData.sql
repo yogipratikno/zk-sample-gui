@@ -915,7 +915,7 @@ values (15122, 0, 'orderPositionDialogWindow', 0);
 INSERT INTO SEC_RIGHT (RIG_ID, RIG_TYPE, RIG_NAME, VERSION)
 values (15200, 5, 'tab_CustomerDialog_Address', 0);
 INSERT INTO SEC_RIGHT (RIG_ID, RIG_TYPE, RIG_NAME, VERSION)
-values (15201, 5, 'tab_CustomerDialog_Addition', 0);
+values (15201, 5, 'tab_CustomerDialog_Chart', 0);
 INSERT INTO SEC_RIGHT (RIG_ID, RIG_TYPE, RIG_NAME, VERSION)
 values (15202, 5, 'tab_CustomerDialog_Orders', 0);
 INSERT INTO SEC_RIGHT (RIG_ID, RIG_TYPE, RIG_NAME, VERSION)
