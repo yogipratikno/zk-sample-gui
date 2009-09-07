@@ -1,9 +1,23 @@
 package de.forsthaus.zksample.webui.customer;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.HashMap;
+import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.encoders.EncoderUtil;
+import org.jfree.chart.encoders.ImageFormat;
+import org.jfree.chart.plot.PiePlot3D;
+import org.jfree.data.general.DefaultPieDataset;
+import org.jfree.date.DateUtilities;
+import org.zkoss.image.AImage;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Path;
@@ -12,6 +26,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -24,8 +39,10 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import de.forsthaus.backend.model.Branche;
+import de.forsthaus.backend.model.ChartData;
 import de.forsthaus.backend.model.Kunde;
 import de.forsthaus.backend.service.BrancheService;
+import de.forsthaus.backend.service.ChartService;
 import de.forsthaus.backend.service.KundeService;
 import de.forsthaus.backend.service.TestService;
 import de.forsthaus.backend.util.HibernateSearchObject;
@@ -84,9 +101,9 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 	protected transient Listbox kunBranche; // autowired
 	protected transient Checkbox kunMahnsperre; // autowired
 
-	// tab Additionally
-	protected transient Tab tabCustomerDialogAddition; // autowired
-	protected transient Tabpanel tabPanelCustomerAddition; // autowired
+	// tab Chart
+	protected transient Tab tabCustomerDialogChart; // autowired
+	protected transient Tabpanel tabPanelCustomerDialogChart; // autowired
 
 	// tab Orders
 	protected transient Tab tabCustomerDialogOrders; // autowired
@@ -128,6 +145,7 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 	private transient BrancheService brancheService;
 	private transient KundeService kundeService;
 	private transient TestService testService;
+	private transient ChartService chartService;
 
 	/**
 	 * default constructor.<br>
@@ -231,8 +249,8 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 		tabCustomerDialogAddress.setVisible(workspace.isAllowed("tab_CustomerDialog_Address"));
 		tabPanelCustomerAddress.setVisible(workspace.isAllowed("tab_CustomerDialog_Address"));
 
-		tabCustomerDialogAddition.setVisible(workspace.isAllowed("tab_CustomerDialog_Addition"));
-		tabPanelCustomerAddition.setVisible(workspace.isAllowed("tab_CustomerDialog_Addition"));
+		tabCustomerDialogChart.setVisible(workspace.isAllowed("tab_CustomerDialog_Chart"));
+		tabPanelCustomerDialogChart.setVisible(workspace.isAllowed("tab_CustomerDialog_Chart"));
 
 		tabCustomerDialogOrders.setVisible(workspace.isAllowed("tab_CustomerDialog_Orders"));
 		tabPanelCustomerOrders.setVisible(workspace.isAllowed("tab_CustomerDialog_Orders"));
@@ -285,6 +303,63 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 
 		// call the zul-file and put it on the tab.
 		Executions.createComponents("/WEB-INF/pages/order/orderList.zul", pChildren, map);
+	}
+
+	/**
+	 * If we select the tab 'Orders' we load the components from a new zul-file <br>
+	 * with his own controller. <br>
+	 * 
+	 * @param event
+	 * @throws IOException
+	 */
+	public void onSelect$tabCustomerDialogChart(Event event) throws IOException {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("--> " + event.toString());
+		}
+
+		// get the customer ID for which we want show a chart
+		long kunId = getKunde().getKunId();
+
+		// get a list of data we would show graphical
+		List<ChartData> kunAmountList = getChartService().getChartDataForCustomer(kunId);
+
+		if (kunAmountList.size() > 0) {
+
+			DefaultPieDataset pieDataset = new DefaultPieDataset();
+
+			for (ChartData chartData : kunAmountList) {
+				int day = chartData.getChartKunInvoiceDate().getDay();
+				int month = chartData.getChartKunInvoiceDate().getMonth();
+				int year = chartData.getChartKunInvoiceDate().getYear();
+				BigDecimal bd = chartData.getChartKunInvoiceAmount().setScale(15, 3);
+				String amount = String.valueOf(bd.doubleValue());
+
+				pieDataset.setValue(month + "/" + year + " " + amount, new Double(chartData.getChartKunInvoiceAmount().doubleValue()));
+			}
+
+			// pieDataset.setValue("C/C++", new Double(17.5));
+			// pieDataset.setValue("PHP", new Double(32.5));
+			// pieDataset.setValue("Java", new Double(43.2));
+			// pieDataset.setValue("Visual Basic", new Double(10));
+
+			String title = getKunde().getKunName1() + ", " + getKunde().getKunName2() + ", " + getKunde().getKunOrt();
+			JFreeChart chart = ChartFactory.createPieChart3D(title, pieDataset, true, true, true);
+			PiePlot3D plot = (PiePlot3D) chart.getPlot();
+			plot.setForegroundAlpha(0.5f);
+			BufferedImage bi = chart.createBufferedImage(750, 400, BufferedImage.TRANSLUCENT, null);
+			byte[] bytes = EncoderUtil.encode(bi, ImageFormat.PNG, true);
+
+			AImage chartImage = new AImage("Pie Chart", bytes);
+
+			Image img = new Image();
+			img.setContent(chartImage);
+			img.setParent(tabPanelCustomerDialogChart);
+
+		} else {
+
+		}
+
 	}
 
 	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -793,6 +868,17 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 			testService = (TestService) SpringUtil.getBean("testService");
 		}
 		return testService;
+	}
+
+	public void setChartService(ChartService chartService) {
+		this.chartService = chartService;
+	}
+
+	public ChartService getChartService() {
+		if (chartService == null) {
+			chartService = (ChartService) SpringUtil.getBean("chartService");
+		}
+		return chartService;
 	}
 
 }
