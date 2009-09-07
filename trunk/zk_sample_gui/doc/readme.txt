@@ -516,6 +516,15 @@ Rights
   and results a  true/false.
       btnSave.setVisible(workspace.isAllowed("button_BranchDialog_btnSave"));
 
+Technical:
+==========
+So, we are using a borderlayout in the 'index.zul' (the main page) and put all other called 
+zul-pages in the center area of it, we have an other working like the normal jsf/jsp apps. 
+As a result we always have the same URL: ~/zk_sample_gui/index.zul
+Therefore we cannot work with an url-based security management like the most 'spring-security' 
+samples shows for this.
+
+
 
 
 
