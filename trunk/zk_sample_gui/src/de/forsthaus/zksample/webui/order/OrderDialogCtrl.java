@@ -545,9 +545,8 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 			// fill the components with the data
 			if (auftrag.getKunde() != null) {
 				kunNr.setValue(auftrag.getKunde().getKunNr());
-				//bbox_Orders_CustomerSearch.setValue(auftrag.getKunde().getKunNr
-				// ());
-				kunName1.setValue(auftrag.getKunde().getKunName1() + ", " + auftrag.getKunde().getKunOrt());
+				kunName1.setValue(auftrag.getKunde().getKunName1() + " " + auftrag.getKunde().getKunName2() + ", "
+						+ auftrag.getKunde().getKunOrt());
 
 			}
 			aufNr.setValue(auftrag.getAufNr());
@@ -927,10 +926,9 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 	/**
 	 * Search/filter data for the filled out fields<br>
 	 * <br>
-	 * 1. Count how many textboxes are filled. <br>
-	 * 2. Create a map with the count entries. <br>
-	 * 3. Store the propertynames and values to the map. <br>
-	 * 4. Call the ServiceDAO method with the map as parameter. <br>
+	 * 1. Create a map with the count entries. <br>
+	 * 2. Store the propertynames and values to the map. <br>
+	 * 3. Call the ServiceDAO method with the map as parameter. <br>
 	 */
 	@SuppressWarnings( { "unused", "unchecked" })
 	private void doSearch() {
@@ -974,12 +972,13 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 
 			// Kunde kunde = (Kunde) item.getAttribute("data");
 			// get the customer object
-			setKunde((Kunde) item.getAttribute("data"));
+			Kunde kunde = (Kunde) item.getAttribute("data");
+			setKunde(kunde);
 
-			kunNr.setValue(kunde.getKunNr());
-			bandbox_OrderDialog_CustomerSearch.setValue(kunde.getKunNr());
-			kunName1.setValue(kunde.getKunName1() + ", " + kunde.getKunOrt());
-
+			kunNr.setValue(getKunde().getKunNr());
+			bandbox_OrderDialog_CustomerSearch.setValue(getKunde().getKunNr());
+			kunName1.setValue(getKunde().getKunName1() + " " + getKunde().getKunName2() + ", " + getKunde().getKunOrt());
+			System.out.println("hier");
 		}
 
 		// close the bandbox

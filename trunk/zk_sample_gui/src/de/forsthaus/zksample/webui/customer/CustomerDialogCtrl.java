@@ -4,11 +4,11 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.MathContext;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.log4j.Logger;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -16,7 +16,6 @@ import org.jfree.chart.encoders.EncoderUtil;
 import org.jfree.chart.encoders.ImageFormat;
 import org.jfree.chart.plot.PiePlot3D;
 import org.jfree.data.general.DefaultPieDataset;
-import org.jfree.date.DateUtilities;
 import org.zkoss.image.AImage;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
@@ -27,6 +26,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -306,8 +306,7 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 	}
 
 	/**
-	 * If we select the tab 'Orders' we load the components from a new zul-file <br>
-	 * with his own controller. <br>
+	 * If we select the tab 'Chart'. <br>
 	 * 
 	 * @param event
 	 * @throws IOException
@@ -317,6 +316,8 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
 		}
+
+		tabPanelCustomerDialogChart.getChildren().clear();
 
 		// get the customer ID for which we want show a chart
 		long kunId = getKunde().getKunId();
@@ -329,21 +330,22 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 			DefaultPieDataset pieDataset = new DefaultPieDataset();
 
 			for (ChartData chartData : kunAmountList) {
-				int day = chartData.getChartKunInvoiceDate().getDay();
-				int month = chartData.getChartKunInvoiceDate().getMonth();
-				int year = chartData.getChartKunInvoiceDate().getYear();
+
+				Calendar calendar = new GregorianCalendar();
+				calendar.setTime(chartData.getChartKunInvoiceDate());
+
+				int month = calendar.get(Calendar.MONTH) + 1;
+				int year = calendar.get(Calendar.YEAR);
+				String key = String.valueOf(month) + "/" + String.valueOf(year);
+
 				BigDecimal bd = chartData.getChartKunInvoiceAmount().setScale(15, 3);
 				String amount = String.valueOf(bd.doubleValue());
 
-				pieDataset.setValue(month + "/" + year + " " + amount, new Double(chartData.getChartKunInvoiceAmount().doubleValue()));
+				// fill the data
+				pieDataset.setValue(key + " " + amount, new Double(chartData.getChartKunInvoiceAmount().doubleValue()));
 			}
 
-			// pieDataset.setValue("C/C++", new Double(17.5));
-			// pieDataset.setValue("PHP", new Double(32.5));
-			// pieDataset.setValue("Java", new Double(43.2));
-			// pieDataset.setValue("Visual Basic", new Double(10));
-
-			String title = getKunde().getKunName1() + ", " + getKunde().getKunName2() + ", " + getKunde().getKunOrt();
+			String title = "Amount per month";
 			JFreeChart chart = ChartFactory.createPieChart3D(title, pieDataset, true, true, true);
 			PiePlot3D plot = (PiePlot3D) chart.getPlot();
 			plot.setForegroundAlpha(0.5f);
@@ -357,6 +359,13 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 			img.setParent(tabPanelCustomerDialogChart);
 
 		} else {
+
+			tabPanelCustomerDialogChart.getChildren().clear();
+
+			Label label = new Label();
+			label.setValue("This customer have no data for showing in a chart!");
+
+			label.setParent(tabPanelCustomerDialogChart);
 
 		}
 
