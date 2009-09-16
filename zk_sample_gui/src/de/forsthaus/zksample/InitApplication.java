@@ -195,7 +195,7 @@ public class InitApplication extends BaseCtrl implements Serializable {
 	private void showDemoData() {
 
 		Panel panel = new Panel();
-		panel.setTitle("Demo-Data for the used H2 Database");
+		panel.setTitle("Demo-Data stored in H2 Database");
 		// panel.setWidth("100%");
 		panel.setWidth("300px");
 		panel.setHeight("100%");
