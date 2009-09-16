@@ -1,22 +1,10 @@
 package de.forsthaus.zksample.webui.customer;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.encoders.EncoderUtil;
-import org.jfree.chart.encoders.ImageFormat;
-import org.jfree.chart.plot.PiePlot3D;
-import org.jfree.data.general.DefaultPieDataset;
-import org.zkoss.image.AImage;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Path;
@@ -25,8 +13,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Image;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -39,7 +25,6 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import de.forsthaus.backend.model.Branche;
-import de.forsthaus.backend.model.ChartData;
 import de.forsthaus.backend.model.Kunde;
 import de.forsthaus.backend.service.BrancheService;
 import de.forsthaus.backend.service.ChartService;
@@ -317,57 +302,28 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 			logger.debug("--> " + event.toString());
 		}
 
-		tabPanelCustomerDialogChart.getChildren().clear();
+		kunde = getKunde();
 
-		// get the customer ID for which we want show a chart
-		long kunId = getKunde().getKunId();
+		/* overhanded params to the zul file */
+		HashMap map = new HashMap();
+		map.put("kunde", kunde);
+		map.put("customerDialogCtrl", this);
 
-		// get a list of data we would show graphical
-		List<ChartData> kunAmountList = getChartService().getChartDataForCustomer(kunId);
+		// PageSize for the Listboxes
+		map.put("rowSizeOrders", new Integer(10));
+		map.put("rowSizeOrderPositions", new Integer(10));
 
-		if (kunAmountList.size() > 0) {
+		Tabpanel chartTab = (Tabpanel) Path.getComponent("/window_customerDialog/tabPanelCustomerDialogChart");
+		chartTab.getChildren().clear();
 
-			DefaultPieDataset pieDataset = new DefaultPieDataset();
+		Panel panel = new Panel();
+		Panelchildren pChildren = new Panelchildren();
 
-			for (ChartData chartData : kunAmountList) {
+		panel.appendChild(pChildren);
+		chartTab.appendChild(panel);
 
-				Calendar calendar = new GregorianCalendar();
-				calendar.setTime(chartData.getChartKunInvoiceDate());
-
-				int month = calendar.get(Calendar.MONTH) + 1;
-				int year = calendar.get(Calendar.YEAR);
-				String key = String.valueOf(month) + "/" + String.valueOf(year);
-
-				BigDecimal bd = chartData.getChartKunInvoiceAmount().setScale(15, 3);
-				String amount = String.valueOf(bd.doubleValue());
-
-				// fill the data
-				pieDataset.setValue(key + " " + amount, new Double(chartData.getChartKunInvoiceAmount().doubleValue()));
-			}
-
-			String title = "Amount per month";
-			JFreeChart chart = ChartFactory.createPieChart3D(title, pieDataset, true, true, true);
-			PiePlot3D plot = (PiePlot3D) chart.getPlot();
-			plot.setForegroundAlpha(0.5f);
-			BufferedImage bi = chart.createBufferedImage(750, 400, BufferedImage.TRANSLUCENT, null);
-			byte[] bytes = EncoderUtil.encode(bi, ImageFormat.PNG, true);
-
-			AImage chartImage = new AImage("Pie Chart", bytes);
-
-			Image img = new Image();
-			img.setContent(chartImage);
-			img.setParent(tabPanelCustomerDialogChart);
-
-		} else {
-
-			tabPanelCustomerDialogChart.getChildren().clear();
-
-			Label label = new Label();
-			label.setValue("This customer have no data for showing in a chart!");
-
-			label.setParent(tabPanelCustomerDialogChart);
-
-		}
+		// call the zul-file and put it on the tab.
+		Executions.createComponents("/WEB-INF/pages/customer/customerChart.zul", pChildren, map);
 
 	}
 
