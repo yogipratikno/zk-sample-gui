@@ -62,24 +62,73 @@
 					<grid id="statusBarGrid" fixedLayout="true"
 						height="20px" width="100%">
 						<columns sizable="false">
-							<column label="User:" width="50px" />
+							<column label="User:" width="10%" />
 							<column id="statusBarColUser" label=""
-								width="120px" />
-							<column label="Office-No.:" width="50px" />
+								width="10%" />
+							<column label="Office-No.:" width="10%" />
 							<column id="statusBarColOfficeNo" label=""
-								width="120px" />
-							<column label="Status" width="50px" />
+								width="10%" />
+							<column label="Status" width="10%" />
 							<column id="statusBarColStatus" label=""
-								width="120px" />
-							<column label="ZK Version" width="50px" />
+								width="10%" />
+							<column label="ZK Version" width="10%" />
 							<column id="statusBarAppVersion" label=""
-								width="80px" />
+								width="10%" />
+							<column id="colDate" width="20%"
+								align="right" />
 						</columns>
 					</grid>
 				</div>
 
 			</south>
 		</borderlayout>
+
+		<label id="lbl2" width="33%" />
+		<timer id="timer2" delay="1000" repeats="true">
+			<attribute name="onTimer">
+	java.util.Calendar calendar = new GregorianCalendar();
+	String str_hour;
+	String str_minute;
+	String str_second;
+	String str_day;
+	String str_month;
+	int hour = calendar.get(java.util.Calendar.HOUR);
+	int min = calendar.get(java.util.Calendar.MINUTE);
+	int sec = calendar.get(java.util.Calendar.SECOND);
+	int day = calendar.get(java.util.Calendar.DAY_OF_MONTH);
+	int month = calendar.get(java.util.Calendar.MONTH);
+	int aa = calendar.get(java.util.Calendar.YEAR);
+	if (calendar.get(java.util.Calendar.AM_PM) == 1)
+		hour = 12 + hour;
+
+	if (String.valueOf(hour).length() == 1)
+		str_hour = "0" + hour;
+	else
+		str_hour = String.valueOf(hour);
+
+	if (String.valueOf(min).length() == 1)
+		str_minute = "0" + min;
+	else
+		str_minute = String.valueOf(min);
+
+	if (String.valueOf(sec).length() == 1)
+		str_second = "0" + sec;
+	else
+		str_second = String.valueOf(sec);
+
+	if (String.valueOf(day).length() == 1)
+		str_day = "0" + day;
+	else
+		str_day = String.valueOf(day);
+
+	if (String.valueOf(month).length() == 1)
+		str_month = "0" + month;
+	else
+		str_month = String.valueOf(month);
+
+	colDate.setLabel(str_day + "." + str_month + "." + aa + " | " + str_hour + ":" + str_minute + ":" + str_second + " ");
+</attribute>
+		</timer>
 
 	</window>
 

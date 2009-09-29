@@ -24,7 +24,7 @@
 			<north id="bl_north" border="none"
 				style="background-color: #EBEBEB" flex="true">
 
-				<div
+				<div width="300px" height="140px"
 					style="background-color: #EBEBEB; padding-top: 10px; padding-left: 10px">
 					<div width="200px" align="left"
 						style="background-color: #EBEBEB; padding: 10px">
@@ -33,10 +33,12 @@
 							image="/images/zkpowered_60x60.png" href="http://www.zkoss.org"
 							tooltiptext="Go to the zkoss framework site" />
 					</div>
+
 					<div width="140px"
 						style="background-color: #EBEBEB">
 						<separator bar="true" />
 					</div>
+
 					<div width="200px"
 						style="background-color: #EBEBEB; padding: 10px">
 						<button id="btn_ii" label="click me !"
