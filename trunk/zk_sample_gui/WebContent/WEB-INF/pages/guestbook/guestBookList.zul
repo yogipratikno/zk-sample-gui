@@ -59,7 +59,7 @@
 					<label id="label_GuestBook_gubText"
 						value="${c:l('label_GuestBook_gubText.value')}" />
 					<textbox id="textbox_GuestBook_gubText"
-						multiline="true" rows="3" width="99%" />
+						multiline="true" rows="5" width="99%" />
 				</hbox>
 			</south>
 
