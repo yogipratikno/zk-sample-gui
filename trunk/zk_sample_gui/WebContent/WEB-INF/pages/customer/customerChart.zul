@@ -56,7 +56,9 @@
 		</toolbar>
 
 
-		<div id="div_chartArea" height="100%" width="100%"></div>
+		<div id="div_chartArea" height="100%" width="100%">
+			Please select the chart type.
+		</div>
 
 
 
