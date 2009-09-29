@@ -335,7 +335,6 @@
 
 							<tabpanel id="tabPanelCustomerDialogChart"
 								height="100%" style="border: 0px">
-								Charts
 							</tabpanel>
 
 							<tabpanel id="tabPanelCustomerOrders"
