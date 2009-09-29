@@ -235,7 +235,7 @@
 					collapsible="true">
 					<panelchildren>
 						<textbox width="100%"
-							value="JasperReports used version = ?? . All reports are created with iReport and uses JRBeanDataSources."
+							value="JasperReports used version = 3.0 . All reports are created with iReport and uses JRBeanDataSources."
 							rows="3" multiline="true">
 						</textbox>
 					</panelchildren>
