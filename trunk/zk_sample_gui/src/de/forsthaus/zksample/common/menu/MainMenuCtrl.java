@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
+
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -13,9 +14,13 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zkex.zul.Borderlayout;
 import org.zkoss.zkex.zul.Center;
+import org.zkoss.zkex.zul.North;
+import org.zkoss.zkex.zul.West;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Menubar;
+import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.Toolbarbutton;
@@ -32,34 +37,20 @@ import de.forsthaus.zksample.common.menu.util.ZkossMenuUtil;
 import de.forsthaus.zksample.webui.util.BaseCtrl;
 
 /**
- * MainMenu Controller
- * -------------------
+ * MainMenu Controller -------------------
  * 
  * Build the menu with the MenuTree + MenuItem classes.
  * 
- * All menuItems calls that are used in the application must be fixed 
- * coded in the doMenuItem() methode.
  * 
- * By creating the menuItems we give them the used id's from the doMenuItem() methode. 
- * 
- * The admin can create/modify  the usergroups/usergoupsRights/usergroupMembers
- * for the users with the given MenuCategories/MenuItems.  
- * 
- * 
- * 		mt = new MenuTree(this, "OfficeData", "Office Data", true);
- *		mt.addMenuItem("menuOfficeData_Customers", "Customers");
- *		mt.addMenuItem("menuOfficeData_Orders", "Orders");
- *		getMainMenuWindow().appendChild(mt);
- *
  * @author sge
- * @changes bj create the menu by java. 
- *
+ * @changes bj create the menu by java.
+ * 
  */
 
 public class MainMenuCtrl extends BaseCtrl implements Serializable {
 
 	private static final long serialVersionUID = -909795057747345551L;
-	private transient final static Logger logger = Logger.getLogger(MainMenuCtrl.class);
+	private transient static final Logger logger = Logger.getLogger(MainMenuCtrl.class);
 
 	/*
 	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -70,12 +61,25 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 	 */
 	private transient Window mainMenuWindow; // autowire
 
+	public void onCreate$mainMenuWindow(Event event) throws Exception {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("--> " + event.toString());
+		}
+
+		// doOnCreateCommon(mainMenuWindow, event); // wire vars
+		doOnCreateCommon(getMainMenuWindow(), event); // wire vars
+
+		createMenu();
+	}
+
 	/**
 	 * Creates the mainMenu. <br>
 	 * 
 	 * @throws InterruptedException
 	 */
 	private void createMenu() throws InterruptedException {
+
 		Div div = new Div();
 		div.setWidth("100%");
 		div.setHeight("100%");
@@ -113,6 +117,19 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 			}
 		});
 
+		toolbarbutton = new Toolbarbutton();
+		hbox.appendChild(toolbarbutton);
+		toolbarbutton.setId("btnMainMenuChange");
+
+		toolbarbutton.setImage("/images/icons/combobox_16x16.gif");
+		toolbarbutton.setTooltiptext(Labels.getLabel("btnMainMenuChange.tooltiptext"));
+		toolbarbutton.addEventListener("onClick", new EventListener() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				onClick$btnMainMenuChange(event);
+			}
+		});
+
 		Separator separator = createSeparator(false);
 		separator.setWidth("97%");
 		separator.setBar(true);
@@ -127,14 +144,9 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 		Treechildren treechildren = new Treechildren();
 		tree.appendChild(treechildren);
 
-		ZkossMenuUtil menuUtil = new ZkossMenuUtil(treechildren);
+		// generate the treeMenu from the menuXMLFile
+		ZkossTreeMenuFactory.addMainMenu(treechildren);
 
-		new HomeMenuTree(menuUtil);
-		new OfficeDataMenuTree(menuUtil);
-		new MainDataMenuTree(menuUtil);
-		new AdministrationMenuTree(menuUtil);
-
-		// Guestbook
 		Separator sep1 = new Separator();
 		sep1.setWidth("97%");
 		sep1.setBar(false);
@@ -150,6 +162,7 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 		sep3.setBar(false);
 		sep3.setParent(div);
 
+		// Guestbook
 		Button btn = new Button("ZK Guestbook");
 		btn.setParent(div);
 		btn.addEventListener("onClick", new GuestBookListener());
@@ -157,8 +170,6 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 		/* as standard, call the welcome page */
 		showPage("/WEB-INF/pages/welcome.zul");
 
-		/** Helper: Shows the whole menu tree in console **/
-		// System.out.println(menuUtil.getZulBaum(this));
 	}
 
 	/**
@@ -188,7 +199,7 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 
 	private void showPage(String zulFilePathName) throws InterruptedException {
 		try {
-			/* get an instance of the borderlayout defined in the index.zul-file */
+			/* get an instance of the borderlayout defined in the zul-file */
 			Borderlayout bl = (Borderlayout) Path.getComponent("/outerIndexWindow/borderlayoutMain");
 			/* get an instance of the searched CENTER layout area */
 			Center center = bl.getCenter();
@@ -216,23 +227,12 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 		this.mainMenuWindow = mainMenuWindow;
 	}
 
-	public void onCreate$mainMenuWindow(Event event) throws Exception {
-
-		if (logger.isDebugEnabled()) {
-			logger.debug("--> " + event.toString());
-		}
-
-		doOnCreateCommon(getMainMenuWindow(), event); // wire vars
-
-		createMenu();
-	}
-
 	public void onClick$btnMainMenuExpandAll(Event event) throws Exception {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
 		}
-		fooBarMirFaelltKeinNameEin(getMainMenuWindow(), true);
+		doCollapseExpandAll(getMainMenuWindow(), true);
 	}
 
 	public void onClick$btnMainMenuCollapseAll(Event event) throws Exception {
@@ -240,10 +240,61 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
 		}
-		fooBarMirFaelltKeinNameEin(getMainMenuWindow(), false);
+		doCollapseExpandAll(getMainMenuWindow(), false);
 	}
 
-	private void fooBarMirFaelltKeinNameEin(Component component, boolean aufklappen) {
+	public void onClick$btnMainMenuChange(Event event) throws Exception {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("--> " + event.toString());
+		}
+
+		// get an instance of the borderlayout defined in the index.zul-file
+		Borderlayout bl = (Borderlayout) Path.getComponent("/outerIndexWindow/borderlayoutMain");
+		// get an instance of the searched west layout area
+		West west = bl.getWest();
+		west.setVisible(false);
+
+		North north = bl.getNorth();
+		north.setFlex(true); // that's important !!!!
+
+		Div div = (Div) north.getFellow("divDropDownMenu");
+
+		Menubar menuBar = (Menubar) div.getFellow("mainMenuBar");
+		menuBar.setVisible(true);
+
+		// generate the menu from the menuXMLFile
+		ZkossDropDownMenuFactory.addDropDownMenu(menuBar);
+
+		Menuitem changeToTreeMenu = new Menuitem();
+		changeToTreeMenu.setLabel(Labels.getLabel("menu_Item_backToTree"));
+		changeToTreeMenu.setImage("/images/icons/refresh2.gif");
+		changeToTreeMenu.setParent(menuBar);
+		changeToTreeMenu.addEventListener("onClick", new EventListener() {
+			@Override
+			public void onEvent(Event event) throws Exception {
+				// get an instance of the borderlayout defined in the
+				// index.zul-file
+				Borderlayout bl = (Borderlayout) Path.getComponent("/outerIndexWindow/borderlayoutMain");
+				// get an instance of the searched west layout area
+				West west = bl.getWest();
+				west.setVisible(true);
+
+				North north = bl.getNorth();
+
+				Div div = (Div) north.getFellow("divDropDownMenu");
+
+				Menubar menuBar = (Menubar) div.getFellow("mainMenuBar");
+				menuBar.getChildren().clear();
+				menuBar.setVisible(false);
+				north.setFlex(false); // that's important !!!!
+
+			}
+		});
+
+	}
+
+	private void doCollapseExpandAll(Component component, boolean aufklappen) {
 		if (component instanceof Treeitem) {
 			Treeitem treeitem = (Treeitem) component;
 			treeitem.setOpen(aufklappen);
@@ -251,7 +302,7 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 		Collection<?> com = component.getChildren();
 		if (com != null) {
 			for (Iterator<?> iterator = com.iterator(); iterator.hasNext();) {
-				fooBarMirFaelltKeinNameEin((Component) iterator.next(), aufklappen);
+				doCollapseExpandAll((Component) iterator.next(), aufklappen);
 
 			}
 		}
