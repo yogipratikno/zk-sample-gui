@@ -40,7 +40,7 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changings for clustering
+ *          07/24/2009: sge changings for clustering.<br>
  * 
  */
 public class ArticleListCtrl extends BaseCtrl implements Serializable {
@@ -87,9 +87,6 @@ public class ArticleListCtrl extends BaseCtrl implements Serializable {
 
 	private transient HibernateSearchObject<Artikel> searchObjArticle;
 
-	/**
-	 * default constructor.<br>
-	 */
 	public ArticleListCtrl() {
 		super();
 		if (logger.isDebugEnabled()) {

@@ -41,7 +41,8 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
+ *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class SecRightListCtrl extends BaseCtrl implements Serializable {
@@ -103,7 +104,7 @@ public class SecRightListCtrl extends BaseCtrl implements Serializable {
 		 * listBox.
 		 */
 		int maxListBoxHeight = (UserWorkspace.getInstance().getCurrentDesktopHeight() - 158);
-		countRows = Math.round(maxListBoxHeight / 17);
+		countRows = Math.round(maxListBoxHeight / 18);
 		// listBoxSecRights.setPageSize(countRows);
 
 		borderLayout_secRightsList.setHeight(String.valueOf(maxListBoxHeight) + "px");
@@ -175,7 +176,23 @@ public class SecRightListCtrl extends BaseCtrl implements Serializable {
 			map.put("secRightListCtrl", this);
 
 			// call the zul-file with the parameters packed in a map
-			Executions.createComponents("/WEB-INF/pages/sec_right/secRightDialog.zul", null, map);
+			Window win = null;
+			try {
+				win = (Window) Executions.createComponents("/WEB-INF/pages/sec_right/secRightDialog.zul", null, map);
+			} catch (Exception e) {
+				logger.error("onOpenWindow:: error opening window / " + e.getMessage());
+
+				// Show a error box
+				String msg = e.getMessage();
+				String title = Labels.getLabel("message_Error");
+
+				MultiLineMessageBox.doSetTemplate();
+				MultiLineMessageBox.show(msg, title, MultiLineMessageBox.OK, "ERROR", true);
+
+				if (win != null) {
+					win.detach();
+				}
+			}
 
 		}
 	}
@@ -227,7 +244,23 @@ public class SecRightListCtrl extends BaseCtrl implements Serializable {
 		map.put("secRightListCtrl", this);
 
 		// call the zul-file with the parameters packed in a map
-		Executions.createComponents("/WEB-INF/pages/sec_right/secRightDialog.zul", null, map);
+		Window win = null;
+		try {
+			win = (Window) Executions.createComponents("/WEB-INF/pages/sec_right/secRightDialog.zul", null, map);
+		} catch (Exception e) {
+			logger.error("onOpenWindow:: error opening window / " + e.getMessage());
+
+			// Show a error box
+			String msg = e.getMessage();
+			String title = Labels.getLabel("message_Error");
+
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(msg, title, MultiLineMessageBox.OK, "ERROR", true);
+
+			if (win != null) {
+				win.detach();
+			}
+		}
 
 	}
 
@@ -377,9 +410,9 @@ public class SecRightListCtrl extends BaseCtrl implements Serializable {
 
 	}
 
-	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++//
-	// ++++++++++++++++++ getter / setter +++++++++++++++++++//
-	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++//
+	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	// +++++++++++++++++++++++ Getter / Setter +++++++++++++++++++++++++
+	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 	public void setTestService(TestService testService) {
 		this.testService = testService;

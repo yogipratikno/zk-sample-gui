@@ -1,14 +1,3 @@
-/*
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- * This is the controller class for the customerList.zul file.
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- * 
- * it extends from our BaseCtrl class.
- * 
- * 
- * 
- */
-
 package de.forsthaus.zksample.webui.customer;
 
 import java.io.Serializable;
@@ -47,8 +36,8 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
- * 
+ *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  */
 public class CustomerListCtrl extends BaseCtrl implements Serializable {
 
@@ -95,6 +84,9 @@ public class CustomerListCtrl extends BaseCtrl implements Serializable {
 	private transient BrancheService brancheService;
 	private transient TestService testService;
 
+	/**
+	 * default constructor.<br>
+	 */
 	public CustomerListCtrl() {
 		super();
 

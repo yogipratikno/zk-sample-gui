@@ -1,19 +1,3 @@
-/*
- * This is the controller class for the branch dialog window described
- * in the branchDialog.zul file.
- * 
- * In this dialog we can do the mainly database oriented methods like 
- * new, edit, save, delete a branch.  
- * 
- * 1. This class is extended from our baseCtrl class, so we have the possibility
- *   to autowire the vars and 
- * 1. we autowire 
- * We check additionally if the dialog window is called with parameters for an object. 
- * Is the object is null or if an existing objects
- * 
- * 
- * 
- */
 package de.forsthaus.zksample.webui.article;
 
 import java.io.Serializable;
@@ -70,10 +54,10 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 	protected transient Textbox artLangbezeichnung; // autowired
 	protected transient Decimalbox artPreis; // autowired
 
-	// per param overhanded vars
-	private transient Artikel artikel; // overhanded
-	private transient Listbox lbArticle; // overhanded
-	private transient ArticleListCtrl articleCtrl; // overhanded
+	// not wired vars
+	private transient Listbox lbArticle; // overhanded per param
+	private transient Artikel artikel; // overhanded per param
+	private transient ArticleListCtrl articleCtrl; // overhanded per param
 
 	// old value vars for edit mode. that we can check if something
 	// on the values are edited since the last init.
@@ -84,8 +68,10 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 
 	private transient boolean validationOn;
 
-	// Button controller for the CRUD buttons
+	// Button Controler
+	// TODO prefix only for testing is same as Customers
 	private transient String btnCtroller_ClassPrefix = "button_ArticlesDialog_";
+
 	private transient ButtonStatusCtrl btnCtrl;
 	protected transient Button btnNew; // autowired
 	protected transient Button btnEdit; // autowired
@@ -95,7 +81,7 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 
 	protected transient Button btnHelp; // autowire
 
-	// ServiceDAOs / Domain Classes
+	// ServiceDAOs
 	private transient ArtikelService artikelService;
 
 	/**
@@ -103,14 +89,18 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 	 */
 	public ArticleDialogCtrl() {
 		super();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("--> super()");
+		}
 	}
 
 	/**
-	 * Before binding articles data and calling the dialog window, we check if
+	 * Before binding articles data and calling the dialog window we check, if
 	 * the zul-file is called with a parameter for a selected article object
 	 * that is stored in a Map.
 	 * 
-	 * Code Convention: window_ArticlesDialog is the 'id' in the zul-file
+	 * Code Convention: articleDialogWindow is the 'id' in the zul-file
 	 * 
 	 * @param event
 	 * @throws Exception
@@ -121,13 +111,12 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 			logger.debug("--> " + event.toString());
 		}
 
-		/* autowire the vars, if needed do binding too */
-		doOnCreateCommon(window_ArticlesDialog, event);
+		doOnCreateCommon(window_ArticlesDialog, event); // autowire the vars
 
 		/* set components visible dependent of the users rights */
 		doCheckRights();
 
-		/* create the Button Controller. Disable not used buttons during working */
+		// create the Button Controller. Disable not used buttons during working
 		btnCtrl = new ButtonStatusCtrl(btnCtroller_ClassPrefix, btnNew, btnEdit, btnDelete, btnSave, btnClose);
 
 		if (args.containsKey("artikel")) {
@@ -208,8 +197,9 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
 		}
@@ -323,7 +313,12 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 				public void onEvent(Event evt) {
 					switch (((Integer) evt.getData()).intValue()) {
 					case Messagebox.YES:
-						doSave();
+						try {
+							doSave();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					case Messagebox.NO:
 						break; // 
 					}
@@ -386,6 +381,16 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 		oldVar_artKurzbezeichnung = artKurzbezeichnung.getValue();
 		oldVar_artLangbezeichnung = artLangbezeichnung.getValue();
 		oldVar_artPreis = artPreis.getValue();
+	}
+
+	/**
+	 * Resets the old values
+	 */
+	private void doResetInitValues() {
+		artNr.setValue(oldVar_artNr);
+		artKurzbezeichnung.setValue(oldVar_artKurzbezeichnung);
+		artLangbezeichnung.setValue(oldVar_artLangbezeichnung);
+		artPreis.setValue(oldVar_artPreis);
 	}
 
 	/**
@@ -529,7 +534,7 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 		artPreis.setValue(new BigDecimal(0));
 	}
 
-	public void doSave() {
+	public void doSave() throws InterruptedException {
 
 		Artikel artikel = getArtikel();
 
@@ -546,10 +551,25 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 		artikel.setArtLangbezeichnung(artLangbezeichnung.getValue());
 		artikel.setArtPreis(artPreis.getValue());
 
-		// save to database
-		getArtikelService().saveOrUpdate(artikel);
+		// save it to database
+		try {
+			getArtikelService().saveOrUpdate(artikel);
+		} catch (Exception e) {
+			String message = e.getMessage();
+			// String message = e.getCause().getMessage();
+			String title = Labels.getLabel("message_Error");
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
 
-		// now synchronize the branches listBox
+			// Reset to init values
+			doResetInitValues();
+
+			doReadOnly();
+			btnCtrl.setBtnStatus_Save();
+			return;
+		}
+
+		// now synchronize the listBox
 		ListModelList lml = (ListModelList) lbArticle.getListModel();
 
 		// Check if the branch object is new or updated
@@ -597,5 +617,4 @@ public class ArticleDialogCtrl extends BaseCtrl implements Serializable {
 	public void setArtikel(Artikel artikel) {
 		this.artikel = artikel;
 	}
-
 }

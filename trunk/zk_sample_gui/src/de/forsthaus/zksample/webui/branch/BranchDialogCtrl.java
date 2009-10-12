@@ -1,13 +1,3 @@
-/*
- * This is the controller class for the branch dialog described
- * in the branchDialog.zul file.
- * 
- * In this dialog we can do the mainly database oriented methods like 
- * new, edit, save, delete a branch. 
- * 
- * 
- * 
- */
 package de.forsthaus.zksample.webui.branch;
 
 import java.io.Serializable;
@@ -31,6 +21,18 @@ import de.forsthaus.zksample.webui.util.BaseCtrl;
 import de.forsthaus.zksample.webui.util.ButtonStatusCtrl;
 import de.forsthaus.zksample.webui.util.MultiLineMessageBox;
 
+/**
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ This is the
+ * controller class for the branchDialog.zul file.
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ * 
+ * it extends from our BaseCtrl class.
+ * 
+ * @author sge(at)forsthaus(dot)de
+ * @changes 07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
+ * 
+ */
 public class BranchDialogCtrl extends BaseCtrl implements Serializable {
 
 	private static final long serialVersionUID = -546886879998950467L;

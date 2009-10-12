@@ -62,7 +62,8 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
+ *          07/24/2009: sge changes for clustering<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class SecGrouprightCtrl extends BaseCtrl implements Serializable {
@@ -140,6 +141,10 @@ public class SecGrouprightCtrl extends BaseCtrl implements Serializable {
 	 */
 	public SecGrouprightCtrl() {
 		super();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("--> super()");
+		}
 	}
 
 	/**
@@ -628,7 +633,23 @@ public class SecGrouprightCtrl extends BaseCtrl implements Serializable {
 			map.put("secGrouprightCtrl", this);
 
 			// call the zul-file with the parameters packed in a map
-			Executions.createComponents("/WEB-INF/pages/sec_groupright/addGrouprightDialog.zul", null, map);
+			Window win = null;
+			try {
+				win = (Window) Executions.createComponents("/WEB-INF/pages/sec_groupright/addGrouprightDialog.zul", null, map);
+			} catch (Exception e) {
+				logger.error("onOpenWindow:: error opening window / " + e.getMessage());
+
+				// Show a error box
+				String msg = e.getMessage();
+				String title = Labels.getLabel("message_Error");
+
+				MultiLineMessageBox.doSetTemplate();
+				MultiLineMessageBox.show(msg, title, MultiLineMessageBox.OK, "ERROR", true);
+
+				if (win != null) {
+					win.detach();
+				}
+			}
 
 		}
 

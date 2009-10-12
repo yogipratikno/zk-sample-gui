@@ -52,7 +52,8 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
  * @see SecGrouprightCtrl
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
+ *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class SecRolegroupCtrl extends BaseCtrl implements Serializable {
@@ -202,8 +203,9 @@ public class SecRolegroupCtrl extends BaseCtrl implements Serializable {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
@@ -265,8 +267,10 @@ public class SecRolegroupCtrl extends BaseCtrl implements Serializable {
 	 * 3. if newly than get a new object first and <b>save</b> it to DB. <br>
 	 * 4. for each 'unchecked item' we must check if it newly unchecked <br>
 	 * 5. if newly unchecked we must <b>delete</b> this item from DB. <br>
+	 * 
+	 * @throws InterruptedException
 	 */
-	public void doSave() {
+	public void doSave() throws InterruptedException {
 
 		List<Listitem> li = listBoxSecRolegroup.getItems();
 
@@ -295,8 +299,16 @@ public class SecRolegroupCtrl extends BaseCtrl implements Serializable {
 						roleGroup.setSecRole(role);
 					}
 
-					// save to DB
-					getSecurityService().saveOrUpdate(roleGroup);
+					try {
+						// save to DB
+						getSecurityService().saveOrUpdate(roleGroup);
+					} catch (Exception e) {
+						String message = e.getMessage();
+						// String message = e.getCause().getMessage();
+						String title = Labels.getLabel("message_Error");
+						MultiLineMessageBox.doSetTemplate();
+						MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
+					}
 
 				} else if (cb.isChecked() == false) {
 
