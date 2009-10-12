@@ -28,6 +28,7 @@ import de.forsthaus.zksample.webui.util.MultiLineMessageBox;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class GuestBookDialogCtrl extends BaseCtrl {
@@ -184,8 +185,9 @@ public class GuestBookDialogCtrl extends BaseCtrl {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
@@ -300,7 +302,12 @@ public class GuestBookDialogCtrl extends BaseCtrl {
 				public void onEvent(Event evt) {
 					switch (((Integer) evt.getData()).intValue()) {
 					case Messagebox.YES:
-						doSave();
+						try {
+							doSave();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					case Messagebox.NO:
 						break; // 
 					}
@@ -364,6 +371,15 @@ public class GuestBookDialogCtrl extends BaseCtrl {
 		oldVar_gubUsrName = textbox_gubUsrName.getValue();
 		oldVar_gubSubject = textbox_gubSubject.getValue();
 		oldVar_gubText = textbox_gubText.getValue();
+	}
+
+	/**
+	 * Resets the old values
+	 */
+	private void doResetInitValues() {
+		textbox_gubUsrName.setValue(oldVar_gubUsrName);
+		textbox_gubSubject.setValue(oldVar_gubSubject);
+		textbox_gubText.setValue(oldVar_gubText);
 	}
 
 	/**
@@ -504,7 +520,7 @@ public class GuestBookDialogCtrl extends BaseCtrl {
 		textbox_gubText.setValue("");
 	}
 
-	public void doSave() {
+	public void doSave() throws InterruptedException {
 
 		GuestBook guestBook = getGuestBook();
 
@@ -520,8 +536,23 @@ public class GuestBookDialogCtrl extends BaseCtrl {
 		guestBook.setGubSubject(textbox_gubSubject.getValue());
 		guestBook.setGubText(textbox_gubText.getValue());
 
-		// save to database
-		getguestBookService().saveOrUpdate(guestBook);
+		// save it to database
+		try {
+			getguestBookService().saveOrUpdate(guestBook);
+		} catch (Exception e) {
+			String message = e.getMessage();
+			// String message = e.getCause().getMessage();
+			String title = Labels.getLabel("message_Error");
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
+
+			// Reset to init values
+			doResetInitValues();
+
+			doReadOnly();
+			btnCtrl.setBtnStatus_Save();
+			return;
+		}
 
 		// now synchronize the branches listBox
 		ListModelList lml = (ListModelList) listbox_GuestBookList.getListModel();

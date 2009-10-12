@@ -27,9 +27,11 @@ import de.forsthaus.zksample.webui.util.MultiLineMessageBox;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
+ *          07/24/2009: sge changes for clustering 10/12/2009: sge changings in
+ *          the saving routine.<br>
  * 
  */
+
 public class SecGroupDialogCtrl extends BaseCtrl implements Serializable {
 
 	private static final long serialVersionUID = -546886879998950467L;
@@ -157,8 +159,9 @@ public class SecGroupDialogCtrl extends BaseCtrl implements Serializable {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
@@ -272,7 +275,12 @@ public class SecGroupDialogCtrl extends BaseCtrl implements Serializable {
 				public void onEvent(Event evt) {
 					switch (((Integer) evt.getData()).intValue()) {
 					case Messagebox.YES:
-						doSave();
+						try {
+							doSave();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					case Messagebox.NO:
 						break; // 
 					}
@@ -338,6 +346,14 @@ public class SecGroupDialogCtrl extends BaseCtrl implements Serializable {
 	private void doStoreInitValues() {
 		oldVar_grpShortdescription = grpShortdescription.getValue();
 		oldVar_grpLongdescription = grpLongdescription.getValue();
+	}
+
+	/**
+	 * Resets the old values
+	 */
+	private void doResetInitValues() {
+		grpShortdescription.setValue(oldVar_grpShortdescription);
+		grpLongdescription.setValue(oldVar_grpLongdescription);
 	}
 
 	/**
@@ -466,7 +482,7 @@ public class SecGroupDialogCtrl extends BaseCtrl implements Serializable {
 		grpLongdescription.setValue("");
 	}
 
-	public void doSave() {
+	public void doSave() throws InterruptedException {
 
 		SecGroup group = getGroup();
 
@@ -482,7 +498,22 @@ public class SecGroupDialogCtrl extends BaseCtrl implements Serializable {
 		group.setGrpLongdescription(grpLongdescription.getValue());
 
 		// save it to database
-		getSecurityService().saveOrUpdate(group);
+		try {
+			getSecurityService().saveOrUpdate(group);
+		} catch (Exception e) {
+			String message = e.getMessage();
+			// String message = e.getCause().getMessage();
+			String title = Labels.getLabel("message_Error");
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
+
+			// Reset to init values
+			doResetInitValues();
+
+			doReadOnly();
+			btnCtrl.setBtnStatus_Save();
+			return;
+		}
 
 		// now synchronize the listBox
 		ListModelList lml = (ListModelList) listBoxSecGroups.getListModel();

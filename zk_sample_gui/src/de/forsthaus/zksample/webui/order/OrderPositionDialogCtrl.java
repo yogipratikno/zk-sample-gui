@@ -52,6 +52,7 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
  *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class OrderPositionDialogCtrl extends BaseCtrl implements Serializable {
@@ -165,7 +166,7 @@ public class OrderPositionDialogCtrl extends BaseCtrl implements Serializable {
 		doCheckRights();
 
 		// create the Button Controller. Disable not used buttons during working
-		btnCtrl = new ButtonStatusCtrl(btnCtroller_RightPrefix, btnNew, btnEdit, btnDelete, btnSave, btnClose);
+		btnCtrl = new ButtonStatusCtrl("button_OrderPositionDialog_", btnNew, btnEdit, btnDelete, btnSave, btnClose);
 
 		if (args.containsKey("auftrag")) {
 			auftrag = (Auftrag) args.get("auftrag");
@@ -269,8 +270,9 @@ public class OrderPositionDialogCtrl extends BaseCtrl implements Serializable {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
@@ -364,7 +366,12 @@ public class OrderPositionDialogCtrl extends BaseCtrl implements Serializable {
 				public void onEvent(Event evt) {
 					switch (((Integer) evt.getData()).intValue()) {
 					case Messagebox.YES:
-						doSave();
+						try {
+							doSave();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					case Messagebox.NO:
 						break; // 
 					}
@@ -433,6 +440,17 @@ public class OrderPositionDialogCtrl extends BaseCtrl implements Serializable {
 		oldVar_aupMenge = aupMenge.getValue();
 		oldVar_aupEinzelwert = aupEinzelwert.getValue();
 		oldVar_aupGesamtwert = aupGesamtwert.getValue();
+	}
+
+	/**
+	 * Resets the old values
+	 */
+	private void doResetInitValues() {
+		artNr.setValue(oldVar_artNr);
+		artKurzbezeichnung.setValue(oldVar_artKurzbezeichnung);
+		aupMenge.setValue(oldVar_aupMenge);
+		aupEinzelwert.setValue(oldVar_aupEinzelwert);
+		aupGesamtwert.setValue(oldVar_aupGesamtwert);
 	}
 
 	/**
@@ -626,7 +644,7 @@ public class OrderPositionDialogCtrl extends BaseCtrl implements Serializable {
 
 	}
 
-	public void doSave() {
+	public void doSave() throws InterruptedException {
 
 		Kunde kunde = getKunde();
 		Auftrag auftrag = getAuftrag();
@@ -654,8 +672,23 @@ public class OrderPositionDialogCtrl extends BaseCtrl implements Serializable {
 		auftragposition.setAupEinzelwert(aupEinzelwert.getValue());
 		auftragposition.setAupGesamtwert(aupGesamtwert.getValue());
 
-		// saves the changes in database
-		getAuftragService().saveOrUpdate(auftragposition);
+		// save it to database
+		try {
+			getAuftragService().saveOrUpdate(auftragposition);
+		} catch (Exception e) {
+			String message = e.getMessage();
+			// String message = e.getCause().getMessage();
+			String title = Labels.getLabel("message_Error");
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
+
+			// Reset to init values
+			doResetInitValues();
+
+			doReadOnly();
+			btnCtrl.setBtnStatus_Save();
+			return;
+		}
 
 		OrderDialogCtrl odc = orderDialogCtrl;
 
@@ -712,6 +745,7 @@ public class OrderPositionDialogCtrl extends BaseCtrl implements Serializable {
 
 		// create a new customer object
 		Kunde kunde = getKundeService().getNewKunde();
+		// kunde.setFiliale(UserWorkspace.getInstance().getFiliale()); // init
 		// kunde.setBranche(Workspace.getBranche()); // init
 		kunde.setBranche(getBrancheService().getBrancheById(new Integer(1033).longValue())); // init
 		kunde.setKunMahnsperre(false); // init

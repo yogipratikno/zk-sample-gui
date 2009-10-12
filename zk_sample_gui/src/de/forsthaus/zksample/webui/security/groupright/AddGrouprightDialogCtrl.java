@@ -39,7 +39,8 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
+ *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class AddGrouprightDialogCtrl extends BaseCtrl implements Serializable {
@@ -105,6 +106,10 @@ public class AddGrouprightDialogCtrl extends BaseCtrl implements Serializable {
 	 */
 	public AddGrouprightDialogCtrl() {
 		super();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("--> super()");
+		}
 	}
 
 	/**
@@ -206,8 +211,9 @@ public class AddGrouprightDialogCtrl extends BaseCtrl implements Serializable {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
@@ -290,7 +296,7 @@ public class AddGrouprightDialogCtrl extends BaseCtrl implements Serializable {
 		addGrouprightDialogWindow.onClose();
 	}
 
-	private void doSave() {
+	private void doSave() throws InterruptedException {
 
 		if (textbox_AddGroupRightDialog_GroupName.getValue().isEmpty()) {
 			return;
@@ -306,8 +312,20 @@ public class AddGrouprightDialogCtrl extends BaseCtrl implements Serializable {
 		SecGroupright gr = getSecurityService().getGroupRightByGroupAndRight(getGroup(), getRight());
 
 		if (gr == null) {
-			/* save */
-			getSecurityService().saveOrUpdate(groupRight);
+
+			// save it to database
+			try {
+				getSecurityService().saveOrUpdate(groupRight);
+			} catch (Exception e) {
+				String message = e.getMessage();
+				// String message = e.getCause().getMessage();
+				String title = Labels.getLabel("message_Error");
+				MultiLineMessageBox.doSetTemplate();
+				MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
+
+				btnCtrl.setBtnStatus_Save();
+			}
+
 		}
 
 		btnCtrl.setBtnStatus_Save();

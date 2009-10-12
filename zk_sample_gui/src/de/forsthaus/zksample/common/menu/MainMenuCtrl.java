@@ -292,6 +292,11 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 				// correct the desktop height
 				UserWorkspace.getInstance().setTreeMenu(true);
 
+				// Refresh the whole page for setting correct sizes of the
+				// components
+				Window win = (Window) Path.getComponent("/outerIndexWindow");
+				win.invalidate();
+
 			}
 		});
 
@@ -300,6 +305,11 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 		guestBookMenu.setLabel("ZK Guestbook");
 		guestBookMenu.setParent(menuBar);
 		guestBookMenu.addEventListener("onClick", new GuestBookListener());
+
+		// Refresh the whole page for setting correct sizes of the
+		// components
+		Window win = (Window) Path.getComponent("/outerIndexWindow");
+		win.invalidate();
 
 	}
 

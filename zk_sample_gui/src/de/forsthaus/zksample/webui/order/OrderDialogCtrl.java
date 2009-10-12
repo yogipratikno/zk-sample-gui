@@ -58,7 +58,8 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
+ *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class OrderDialogCtrl extends BaseCtrl implements Serializable {
@@ -145,6 +146,10 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 	 */
 	public OrderDialogCtrl() {
 		super();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("--> super()");
+		}
 	}
 
 	/**
@@ -288,8 +293,9 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
@@ -507,7 +513,12 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 				public void onEvent(Event evt) {
 					switch (((Integer) evt.getData()).intValue()) {
 					case Messagebox.YES:
-						doSave();
+						try {
+							doSave();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					case Messagebox.NO:
 						break; // 
 					}
@@ -577,6 +588,16 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 	}
 
 	/**
+	 * Resets the old values
+	 */
+	private void doResetInitValues() {
+		kunNr.setValue(oldVar_kunNr);
+		kunName1.setValue(oldVar_kunName1);
+		aufNr.setValue(oldVar_aufNr);
+		aufBezeichnung.setValue(oldVar_aufBezeichnung);
+	}
+
+	/**
 	 * Checks, if data are changed since the last call of <br>
 	 * doStoreInitData() . <br>
 	 * 
@@ -638,7 +659,8 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 		String msg = Labels.getLabel("message.question.are_you_sure_to_delete_this_record");
 		String title = Labels.getLabel("message_Deleting_Record");
 
-		if (Messagebox.show(msg, title, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, new EventListener() {
+		MultiLineMessageBox.doSetTemplate();
+		if (MultiLineMessageBox.show(msg, title, Messagebox.YES | Messagebox.NO, Messagebox.QUESTION, true, new EventListener() {
 			public void onEvent(Event evt) {
 				switch (((Integer) evt.getData()).intValue()) {
 				case Messagebox.YES:
@@ -728,7 +750,7 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 		// doSetValidation();
 	}
 
-	public void doSave() {
+	public void doSave() throws InterruptedException {
 
 		Auftrag auftrag = getAuftrag();
 		Kunde kunde = getKunde();
@@ -749,8 +771,23 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 		auftrag.setAufNr(aufNr.getValue());
 		auftrag.setAufBezeichnung(aufBezeichnung.getValue());
 
-		// saves the changes in database
-		getAuftragService().saveOrUpdate(auftrag);
+		// save it to database
+		try {
+			getAuftragService().saveOrUpdate(auftrag);
+		} catch (Exception e) {
+			String message = e.getMessage();
+			// String message = e.getCause().getMessage();
+			String title = Labels.getLabel("message_Error");
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
+
+			// Reset to init values
+			doResetInitValues();
+
+			doReadOnly();
+			btnCtrl.setBtnStatus_Save();
+			return;
+		}
 
 		// now synchronize the offices listBox
 		ListModelList lml = (ListModelList) listBoxOrder.getListModel();
@@ -865,6 +902,7 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 
 		// create a new customer object
 		Kunde kunde = getKundeService().getNewKunde();
+//		kunde.setFiliale(UserWorkspace.getInstance().getFiliale()); // init
 		// kunde.setBranche(Workspace.getBranche()); // init
 		kunde.setBranche(getBrancheService().getBrancheById(new Integer(1033).longValue())); // init
 		kunde.setKunMahnsperre(false); // init
@@ -918,8 +956,6 @@ public class OrderDialogCtrl extends BaseCtrl implements Serializable {
 		listBoxCustomerSearch.setModel(new PagedListWrapper<Kunde>(listBoxCustomerSearch, paging_OrderDialog_CustomerSearchList,
 				getTestService().getSRBySearchObject(searchObjCustomer, 0, 20), searchObjCustomer));
 
-		// listBoxCustomerSearch.setModel(new
-		// ListModelList(getKundeService().getAlleKunden()));
 		listBoxCustomerSearch.setItemRenderer(new OrderSearchCustomerListModelItemRenderer());
 	}
 

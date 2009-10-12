@@ -58,7 +58,8 @@ import de.forsthaus.zksample.webui.util.MultiLineMessageBox;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
+ *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
@@ -137,6 +138,10 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 	 */
 	public CustomerDialogCtrl() {
 		super();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("--> super()");
+		}
 	}
 
 	/**
@@ -158,7 +163,6 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 
 		/* set components visible dependent of the users rights */
 		doCheckRights();
-
 		/* create the Button Controller. Disable not used buttons during working */
 		btnCtrl = new ButtonStatusCtrl(btnCtroller_ClassPrefix, btnNew, btnEdit, btnDelete, btnSave, btnClose);
 
@@ -350,8 +354,9 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
@@ -448,8 +453,10 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 	 * Before closing we check if there are unsaved changes in <br>
 	 * the components and ask the user if saving the modifications. <br>
 	 * 
+	 * @throws InterruptedException
+	 * 
 	 */
-	private void doClose() throws Exception {
+	private void doClose() throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> DataIsChanged :" + isDataChanged());
@@ -465,7 +472,12 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 				public void onEvent(Event evt) {
 					switch (((Integer) evt.getData()).intValue()) {
 					case Messagebox.YES:
-						doSave();
+						try {
+							doSave();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					case Messagebox.NO:
 						break; // 
 					}
@@ -545,6 +557,20 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 	}
 
 	/**
+	 * Resets the old values
+	 */
+	private void doResetInitValues() {
+		kunNr.setValue(oldVar_kunNr);
+		kunMatchcode.setValue(oldVar_kunMatchcode);
+		kunName1.setValue(oldVar_kunName1);
+		kunName2.setValue(oldVar_kunName2);
+		kunOrt.setValue(oldVar_kunOrt);
+
+		kunBranche.setSelectedItem(oldVar_kunBranche);
+		kunMahnsperre.setChecked(oldVar_kunMahnsperre);
+	}
+
+	/**
 	 * Checks, if data are changed since the last call of <br>
 	 * doStoreInitData() . <br>
 	 * 
@@ -589,6 +615,8 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 		kunMatchcode.setConstraint("NO EMPTY");
 		kunName1.setConstraint("NO EMPTY");
 		kunOrt.setConstraint("NO EMPTY");
+		// TODO helper textbox for selectedItem ?????
+		// kunBranche.setConstraint(new SimpleConstraint("NO EMPTY"));
 	}
 
 	/**
@@ -659,6 +687,9 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 		// we get it from the backend.
 		Kunde kunde = getKundeService().getNewKunde();
 
+		// our customer have a table-reference on filiale
+		// we take the filiale we have become by logged in
+		// kunde.setFiliale(UserWorkspace.getInstance().getFiliale());
 		setKunde(kunde);
 
 		doClear(); // clear all commponents
@@ -710,14 +741,10 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 		kunMahnsperre.setChecked(false);
 
 		// unselect the last customers branch
-		try {
-			kunBranche.setSelectedIndex(0);
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+		kunBranche.setSelectedIndex(0);
 	}
 
-	public void doSave() {
+	public void doSave() throws InterruptedException {
 
 		Kunde kunde = getKunde();
 
@@ -729,7 +756,6 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 		}
 
 		// fill the customer object with the components data
-		// and validate the values if there are constraints attached.
 		kunde.setKunNr(kunNr.getValue());
 		kunde.setKunMatchcode(kunMatchcode.getValue());
 		kunde.setKunName1(kunName1.getValue());
@@ -760,7 +786,22 @@ public class CustomerDialogCtrl extends BaseCtrl implements Serializable {
 		}
 
 		// save it to database
-		getKundeService().saveOrUpdate(kunde);
+		try {
+			getKundeService().saveOrUpdate(kunde);
+		} catch (Exception e) {
+			String message = e.getMessage();
+			// String message = e.getCause().getMessage();
+			String title = Labels.getLabel("message_Error");
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
+
+			// Reset to init values
+			doResetInitValues();
+
+			doReadOnly();
+			btnCtrl.setBtnStatus_Save();
+			return;
+		}
 
 		// call from cusromerList then synchronize the customers listBox
 		if (lbCustomer != null) {

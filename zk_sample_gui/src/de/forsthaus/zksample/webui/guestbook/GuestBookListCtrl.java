@@ -37,7 +37,8 @@ import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
  * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
  * 
  * @author sge(at)forsthaus(dot)de
- * @changes 07/24/2009: sge changes for clustering
+ * @changes 07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class GuestBookListCtrl extends BaseCtrl implements Serializable {
@@ -72,6 +73,9 @@ public class GuestBookListCtrl extends BaseCtrl implements Serializable {
 	private transient GuestBookService guestBookService;
 	private transient TestService testService;
 
+	/**
+	 * default constructor.<br>
+	 */
 	public GuestBookListCtrl() {
 		super();
 
@@ -148,7 +152,9 @@ public class GuestBookListCtrl extends BaseCtrl implements Serializable {
 
 		UserWorkspace workspace = UserWorkspace.getInstance();
 
-		window_GuestBookList.setVisible(workspace.isAllowed("window_BranchesList"));
+		// window_GuestBookList.setVisible(workspace.isAllowed(
+		// "window_BranchesList"));
+		window_GuestBookList.setVisible(true);
 	}
 
 	// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -202,7 +208,23 @@ public class GuestBookListCtrl extends BaseCtrl implements Serializable {
 		map.put("guestBookListCtrl", this);
 
 		// call the zul-file with the parameters packed in a map
-		Executions.createComponents("/WEB-INF/pages/guestbook/guestBookDialog.zul", null, map);
+		Window win = null;
+		try {
+			win = (Window) Executions.createComponents("/WEB-INF/pages/guestbook/guestBookDialog.zul", null, map);
+		} catch (Exception e) {
+			logger.error("onOpenWindow:: error opening window / " + e.getMessage());
+
+			// Show a error box
+			String msg = e.getMessage();
+			String title = Labels.getLabel("message_Error");
+
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(msg, title, MultiLineMessageBox.OK, "ERROR", true);
+
+			if (win != null) {
+				win.detach();
+			}
+		}
 
 	}
 
@@ -254,20 +276,26 @@ public class GuestBookListCtrl extends BaseCtrl implements Serializable {
 			map.put("resultListCtrl", this);
 
 			// call the zul-file with the parameters packed in a map
-			Executions.createComponents("/WEB-INF/pages/guestbook/guestBookDialog.zul", null, map);
+			Window win = null;
+			try {
+				win = (Window) Executions.createComponents("/WEB-INF/pages/guestbook/guestBookDialog.zul", null, map);
+			} catch (Exception e) {
+				logger.error("onOpenWindow:: error opening window / " + e.getMessage());
+
+				// Show a error box
+				String msg = e.getMessage();
+				String title = Labels.getLabel("message_Error");
+
+				MultiLineMessageBox.doSetTemplate();
+				MultiLineMessageBox.show(msg, title, MultiLineMessageBox.OK, "ERROR", true);
+
+				if (win != null) {
+					win.detach();
+				}
+			}
 
 		}
-	}
 
-	/**
-	 * Get the actual date/time on server. <br>
-	 * 
-	 * @return String of date/time
-	 */
-	private String getDateTime() {
-		DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
-		Date date = new Date();
-		return dateFormat.format(date);
 	}
 
 	// ++++++++++++++++++++++++++++++++++++++++++++++++++++++//

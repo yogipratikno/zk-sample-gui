@@ -1,15 +1,5 @@
 package de.forsthaus.zksample.webui.order;
 
-/**
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
- * This is the controller class for the orderList.zul file.<br>
- * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
- * 
- * @author sge(at)forsthaus(dot)de
- * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
- * 
- */
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -49,6 +39,17 @@ import de.forsthaus.zksample.webui.util.BaseCtrl;
 import de.forsthaus.zksample.webui.util.MultiLineMessageBox;
 import de.forsthaus.zksample.webui.util.pagging.PagedListWrapper;
 
+/**
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
+ * This is the controller class for the orderList.zul file.<br>
+ * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++<br>
+ * 
+ * @author sge(at)forsthaus(dot)de
+ * @changes 05/15/2009: sge Migrating the list models for paging. <br>
+ *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
+ * 
+ */
 public class OrderListCtrl extends BaseCtrl implements Serializable {
 
 	private static final long serialVersionUID = 5710086946825179284L;
@@ -115,8 +116,12 @@ public class OrderListCtrl extends BaseCtrl implements Serializable {
 	private transient BrancheService brancheService;
 	private transient TestService testService;
 
+	/**
+	 * default constructor.<br>
+	 */
 	public OrderListCtrl() {
 		super();
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> super()");
 		}

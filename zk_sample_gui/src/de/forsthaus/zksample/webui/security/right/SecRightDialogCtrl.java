@@ -31,7 +31,8 @@ import de.forsthaus.zksample.webui.util.MultiLineMessageBox;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
+ *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class SecRightDialogCtrl extends BaseCtrl implements Serializable {
@@ -79,6 +80,7 @@ public class SecRightDialogCtrl extends BaseCtrl implements Serializable {
 	 */
 	public SecRightDialogCtrl() {
 		super();
+
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> super()");
 		}
@@ -174,8 +176,9 @@ public class SecRightDialogCtrl extends BaseCtrl implements Serializable {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
@@ -289,7 +292,12 @@ public class SecRightDialogCtrl extends BaseCtrl implements Serializable {
 				public void onEvent(Event evt) {
 					switch (((Integer) evt.getData()).intValue()) {
 					case Messagebox.YES:
-						doSave();
+						try {
+							doSave();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					case Messagebox.NO:
 						break; // 
 					}
@@ -355,6 +363,14 @@ public class SecRightDialogCtrl extends BaseCtrl implements Serializable {
 	private void doStoreInitValues() {
 		oldVar_rigName = rigName.getValue();
 		oldVar_rigType = rigType.getSelectedItem();
+	}
+
+	/**
+	 * Resets the old values
+	 */
+	private void doResetInitValues() {
+		rigName.setValue(oldVar_rigName);
+		rigType.setSelectedItem(oldVar_rigType);
 	}
 
 	/**
@@ -490,7 +506,7 @@ public class SecRightDialogCtrl extends BaseCtrl implements Serializable {
 		rigType.setSelectedIndex(-1);
 	}
 
-	public void doSave() {
+	public void doSave() throws InterruptedException {
 
 		SecRight right = getRight();
 
@@ -521,7 +537,22 @@ public class SecRightDialogCtrl extends BaseCtrl implements Serializable {
 		right.setRigType(typ.getStpId());
 
 		// save it to database
-		getSecurityService().saveOrUpdate(right);
+		try {
+			getSecurityService().saveOrUpdate(right);
+		} catch (Exception e) {
+			String message = e.getMessage();
+			// String message = e.getCause().getMessage();
+			String title = Labels.getLabel("message_Error");
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
+
+			// Reset to init values
+			doResetInitValues();
+
+			doReadOnly();
+			btnCtrl.setBtnStatus_Save();
+			return;
+		}
 
 		// now synchronize the listBox
 		ListModelList lml = (ListModelList) listBoxSecRights.getListModel();

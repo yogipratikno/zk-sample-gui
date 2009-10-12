@@ -40,7 +40,8 @@ import de.forsthaus.zksample.webui.util.NoEmptyAndEqualStringsConstraint;
  * 
  * @author sge(at)forsthaus(dot)de
  * @changes 05/15/2009: sge Migrating the list models for paging. <br>
- *          07/24/2009: sge changes for clustering
+ *          07/24/2009: sge changes for clustering.<br>
+ *          10/12/2009: sge changings in the saving routine.<br>
  * 
  */
 public class UserDialogCtrl extends BaseCtrl implements Serializable {
@@ -126,6 +127,10 @@ public class UserDialogCtrl extends BaseCtrl implements Serializable {
 	 */
 	public UserDialogCtrl() {
 		super();
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("--> super()");
+		}
 	}
 
 	/**
@@ -257,8 +262,9 @@ public class UserDialogCtrl extends BaseCtrl implements Serializable {
 	 * when the "save" button is clicked.
 	 * 
 	 * @param event
+	 * @throws InterruptedException
 	 */
-	public void onClick$btnSave(Event event) {
+	public void onClick$btnSave(Event event) throws InterruptedException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("--> " + event.toString());
@@ -372,7 +378,12 @@ public class UserDialogCtrl extends BaseCtrl implements Serializable {
 				public void onEvent(Event evt) {
 					switch (((Integer) evt.getData()).intValue()) {
 					case Messagebox.YES:
-						doSave();
+						try {
+							doSave();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					case Messagebox.NO:
 						break; // 
 					}
@@ -464,6 +475,24 @@ public class UserDialogCtrl extends BaseCtrl implements Serializable {
 	}
 
 	/**
+	 * Resets the old values
+	 */
+	private void doResetInitValues() {
+		usrLoginname.setValue(oldVar_usrLoginname);
+		usrPassword.setValue(oldVar_usrPassword);
+		usrPasswordRetype.setValue(oldVar_usrPasswordRetype);
+		usrFirstname.setValue(oldVar_usrFirstname);
+		usrLastname.setValue(oldVar_usrLastname);
+		usrEmail.setValue(oldVar_usrEmail);
+		lbox_usrLocale.setSelectedItem(oldVar_usrLangauge);
+		usrEnabled.setChecked(oldVar_usrEnabled);
+		usrAccountnonexpired.setChecked(oldVar_usrAccountnonexpired);
+		usrCredentialsnonexpired.setChecked(oldVar_usrCredentialsnonexpired);
+		usrAccountnonlocked.setChecked(oldVar_usrAccountnonlocked);
+		usrToken.setValue(oldVar_usrToken);
+	}
+
+	/**
 	 * Checks, if data are changed since the last call of <br>
 	 * doStoreInitData() . <br>
 	 * 
@@ -524,6 +553,10 @@ public class UserDialogCtrl extends BaseCtrl implements Serializable {
 		usrPasswordRetype.setConstraint(new NoEmptyAndEqualStringsConstraint(usrPassword));
 		usrFirstname.setConstraint("NO EMPTY");
 		usrLastname.setConstraint("NO EMPTY");
+
+		// TODO helper textbox for selectedItem ?????
+		// rigType.getSelectedItem()) {
+
 	}
 
 	/**
@@ -673,7 +706,7 @@ public class UserDialogCtrl extends BaseCtrl implements Serializable {
 		usrToken.setValue("");
 	}
 
-	public void doSave() {
+	public void doSave() throws InterruptedException {
 
 		SecUser user = getUser();
 
@@ -730,7 +763,22 @@ public class UserDialogCtrl extends BaseCtrl implements Serializable {
 		}
 
 		// save it to database
-		getUserService().saveOrUpdate(user);
+		try {
+			getUserService().saveOrUpdate(user);
+		} catch (Exception e) {
+			String message = e.getMessage();
+			// String message = e.getCause().getMessage();
+			String title = Labels.getLabel("message_Error");
+			MultiLineMessageBox.doSetTemplate();
+			MultiLineMessageBox.show(message, title, MultiLineMessageBox.OK, "ERROR", true);
+
+			// Reset to init values
+			doResetInitValues();
+
+			doReadOnly();
+			btnCtrl.setBtnStatus_Save();
+			return;
+		}
 
 		// now synchronize the listBox
 		ListModelList lml = (ListModelList) listBoxUser.getListModel();
