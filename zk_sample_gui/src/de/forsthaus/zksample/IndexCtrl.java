@@ -13,6 +13,7 @@ import org.zkoss.zkex.zul.Borderlayout;
 import org.zkoss.zkex.zul.Center;
 import org.zkoss.zkex.zul.West;
 import org.zkoss.zul.Column;
+import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
@@ -31,6 +32,7 @@ public class IndexCtrl extends BaseCtrl implements Serializable {
 	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 	 */
 	protected transient Window outerIndexWindow; // autowired
+	protected transient Menubar mainMenuBar; // autowired
 
 	protected transient Column statusBarAppVersion; // autowired
 	protected transient Column statusBarColUser; // autowired
@@ -75,7 +77,9 @@ public class IndexCtrl extends BaseCtrl implements Serializable {
 
 		doOnCreateCommon(outerIndexWindow);
 
-		createMainMenu();
+		mainMenuBar.setVisible(false);
+
+		createMainTreeMenu();
 
 		doShowVersion();
 
@@ -83,7 +87,7 @@ public class IndexCtrl extends BaseCtrl implements Serializable {
 
 	}
 
-	private void createMainMenu() {
+	private void createMainTreeMenu() {
 
 		// get an instance of the borderlayout defined in the index.zul-file
 		Borderlayout bl = (Borderlayout) Path.getComponent("/outerIndexWindow/borderlayoutMain");

@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
-
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -29,11 +28,9 @@ import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Window;
 
-import de.forsthaus.zksample.common.menu.sub.AdministrationMenuTree;
-import de.forsthaus.zksample.common.menu.sub.HomeMenuTree;
-import de.forsthaus.zksample.common.menu.sub.MainDataMenuTree;
-import de.forsthaus.zksample.common.menu.sub.OfficeDataMenuTree;
-import de.forsthaus.zksample.common.menu.util.ZkossMenuUtil;
+import de.forsthaus.zksample.UserWorkspace;
+import de.forsthaus.zksample.common.menu.dropdown.ZkossDropDownMenuFactory;
+import de.forsthaus.zksample.common.menu.tree.ZkossTreeMenuFactory;
 import de.forsthaus.zksample.webui.util.BaseCtrl;
 
 /**
@@ -249,6 +246,9 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 			logger.debug("--> " + event.toString());
 		}
 
+		// correct the desktop height
+		UserWorkspace.getInstance().setTreeMenu(false);
+
 		// get an instance of the borderlayout defined in the index.zul-file
 		Borderlayout bl = (Borderlayout) Path.getComponent("/outerIndexWindow/borderlayoutMain");
 		// get an instance of the searched west layout area
@@ -289,8 +289,17 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 				menuBar.setVisible(false);
 				north.setFlex(false); // that's important !!!!
 
+				// correct the desktop height
+				UserWorkspace.getInstance().setTreeMenu(true);
+
 			}
 		});
+
+		// Guestbook
+		Menuitem guestBookMenu = new Menuitem();
+		guestBookMenu.setLabel("ZK Guestbook");
+		guestBookMenu.setParent(menuBar);
+		guestBookMenu.addEventListener("onClick", new GuestBookListener());
 
 	}
 

@@ -49,6 +49,7 @@ public class UserWorkspace implements Serializable {
 
 	private int currentDesktopHeight; // actual Desktop Height
 	private int currentDesktopWidth; // actual Desktop Width
+	private boolean treeMenu = true;
 
 	private Set<String> grantedAuthoritySet = null;
 
@@ -116,7 +117,12 @@ public class UserWorkspace implements Serializable {
 	}
 
 	public int getCurrentDesktopHeight() {
-		return currentDesktopHeight;
+		if (isTreeMenu() == true) {
+			return currentDesktopHeight;
+		}
+
+		// menuBar for DropDown menu
+		return currentDesktopHeight - 25;
 	}
 
 	public void setCurrentDesktopWidth(int currentDesktopWidth) {
@@ -150,6 +156,14 @@ public class UserWorkspace implements Serializable {
 		//
 		// return userLanguageProperty;
 		return null;
+	}
+
+	public void setTreeMenu(boolean treeMenu) {
+		this.treeMenu = treeMenu;
+	}
+
+	public boolean isTreeMenu() {
+		return treeMenu;
 	}
 
 }
