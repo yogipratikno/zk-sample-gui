@@ -118,7 +118,8 @@ public class MainMenuCtrl extends BaseCtrl implements Serializable {
 		hbox.appendChild(toolbarbutton);
 		toolbarbutton.setId("btnMainMenuChange");
 
-		toolbarbutton.setImage("/images/icons/combobox_16x16.gif");
+		toolbarbutton.setImage("/images/icons/menu_16x16.png");
+		// toolbarbutton.setImage("/images/icons/combobox_16x16.gif");
 		toolbarbutton.setTooltiptext(Labels.getLabel("btnMainMenuChange.tooltiptext"));
 		toolbarbutton.addEventListener("onClick", new EventListener() {
 			@Override
